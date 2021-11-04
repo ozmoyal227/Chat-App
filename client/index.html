@@ -19,10 +19,18 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
-    </form>
+    <div class="d-flex flex-row ">
+      <div id="userPanel" class="order-first">
+        User-Panel
+      </div>
+      <div id="chat" class="order-last">
+        <ul id="messages"></ul>
+        <form id="form" action="">
+          <input id="input" autocomplete="off" /><button>Send</button>
+        </form>
+      </div>
+    </div>
+    
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
