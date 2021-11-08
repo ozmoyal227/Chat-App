@@ -12,8 +12,9 @@ const { Console } = require('console');
 
 
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../client/index.html"));
+  res.sendFile(path.resolve(__dirname, "../client/login.html")); 
 });
+
 // =============
 // API
 // =============

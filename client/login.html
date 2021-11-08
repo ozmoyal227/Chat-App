@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login page</title>
+    <!-- bootstrap ref -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <style>
+        html,body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+        }
+        #loginForm {
+            width: 25%;
+            text-align: center;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loginForm" class="form-group shadow p-1 bg-body rounded border">
+        <form  action="../client/index.html" method="get">
+            <div class="rounded border">
+                Welcome to ChatApp
+            </div>
+            <div class="rounded border">
+                <p><label for="UserName">Please enter a user name:</label></p>
+                <p><input class="col-10" type="text"></p>
+                <p><input type="submit" value="Join ChatApp"/></p>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>
