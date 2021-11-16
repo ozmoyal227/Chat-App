@@ -1,27 +1,33 @@
-const path = require("path");
-const express = require("express");
+import path from "path";
+import express from "express";
+import dotenv from "dotenv";
+import dbInit from "./db/init.js";
 
-const PORT = process.env.PORT || 3001;
-const app = express();
+dotenv.config();
 
-// app.use(express.static(path.resolve(__dirname, "../client/index.html")));
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../client/index.html"));
-});
-// =============
-// API
-// =============
-app.get("/api", (req, res) => {
-  res.json({ message: "Hello from server!" });
-});
+try {
+  // =============
+  // DB
+  // =============
+  dbInit();
 
-// =============
-// Socket IO
-// =============
+  // =============
+  // Server
+  // =============
+  const app = express();
+  const PORT = process.env.PORT || 3001;
 
-// =============
-// Server
-// =============
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
-});
+  app.get("/", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client/index.html"));
+  });
+
+  app.get("/api", (req, res) => {
+    res.json({ message: "Hello from server!" });
+  });
+
+  app.listen(PORT, () => {
+    console.log(`Server listening on ${PORT}`);
+  });
+} catch (error) {
+  console.log(`Error starting server`);
+}
