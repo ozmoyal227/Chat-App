@@ -9,16 +9,21 @@ const app = express();
 
 app.use(express.json());
 
-db.sequelize.sync();
-
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../client/index.html"));
-});
+// =============
+// DB INIT
+// =============
+(async () => {
+  await db.sequelize.sync();
+  await roomsService.createLobbyIfNotExist();
+})();
 
 // =============
 // API
 // =============
 const baseRoute = "/api";
+app.get("/", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/index.html"));
+});
 app.get(baseRoute, (req, res) => {
   res.json({ message: "Hello from server!" });
 });
@@ -32,13 +37,20 @@ app.post(`${baseRoute}/users`, async (req, res) => {
   res.json(user);
 });
 
+app.post(`${baseRoute}/users/:userId/rooms/:roomId`, async (req, res) => {
+  const user = await usersService.addRoomToUser(
+    req.params.userId,
+    req.params.roomId
+  );
+
+  res.json(user);
+});
+
 // POST room
 app.post(`${baseRoute}/rooms`, async (req, res) => {
   const room = await roomsService.addRoom({
-    userId: req.body.userId,
     name: req.body.name,
   });
-
   res.json(room);
 });
 

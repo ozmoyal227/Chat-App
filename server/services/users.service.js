@@ -1,4 +1,5 @@
 import db from "../db-init.js";
+import roomsService from "./rooms.service.js";
 
 const User = db.users;
 
@@ -6,11 +7,15 @@ const addUser = async (user) => {
   console.log(addUser.name, "Adding new user", JSON.stringify(user, null, 2));
 
   try {
-    const newUser = await User.create(user);
+    const { id, name, rooms } = await User.create({
+      name: user.name,
+      rooms: [],
+    });
 
     return {
-      id: newUser.id,
-      name: newUser.name,
+      id,
+      name,
+      rooms,
     };
   } catch (error) {
     console.error(
@@ -22,6 +27,47 @@ const addUser = async (user) => {
   }
 };
 
-const usersService = { addUser };
+const addRoomToUser = async (userId, roomId) => {
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      console.error(addRoomToUser.name, `User ${userId} not found`);
+      return null;
+    }
+
+    const roomExist = user.rooms.find((id) => id === roomId);
+
+    if (roomExist) {
+      console.error(addRoomToUser.name, `User is already in room`);
+      return;
+    }
+
+    const room = await roomsService.get(roomId);
+    if (!room) {
+      console.error(addRoomToUser.name, `Room ${roomId} not found`);
+      return null;
+    }
+
+    user.rooms = [...user.rooms, roomId];
+    await user.save();
+    return user;
+  } catch (error) {
+    console.error(addRoomToUser.name, "Error adding room to user");
+    return null;
+  }
+};
+
+const get = async (id) => {
+  console.log(get.name, `Getting user ${id}`);
+  try {
+    const user = await User.findByPk(id);
+    return user;
+  } catch (error) {
+    console.error(get.name, "Error getting user", error);
+    return null;
+  }
+};
+
+const usersService = { addUser, addRoomToUser, get };
 
 export default usersService;

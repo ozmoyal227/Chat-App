@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import initRoom from "./models/room.js";
 import initUser from "./models/user.js";
+// import roomsService from "./services/rooms.service.js";
 
 const sequelize = new Sequelize(
   `postgres://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
@@ -8,6 +9,19 @@ const sequelize = new Sequelize(
     logging: false,
   }
 );
+
+const db = {
+  sequelize: sequelize,
+  users: null,
+  rooms: null,
+};
+
+try {
+  db.users = initUser(sequelize);
+  db.rooms = initRoom(sequelize);
+} catch (error) {
+  console.error("Error init table", error);
+}
 
 (async () => {
   try {
@@ -17,19 +31,5 @@ const sequelize = new Sequelize(
     console.error("DB - Unable to connect to the database:", error);
   }
 })();
-
-const db = {
-  sequelize: sequelize,
-  users: initUser(sequelize),
-  rooms: initRoom(sequelize),
-};
-
-// TODO: [OZ] create many to many relation between Users - Rooms
-
-db.users.hasMany(db.rooms, { as: "rooms" });
-db.rooms.belongsTo(db.users, {
-  foreignKey: "userId",
-  as: "user",
-});
 
 export default db;

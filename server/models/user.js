@@ -13,6 +13,10 @@ const initUser = (sequelize) => {
       allowNull: false,
       unique: true,
     },
+    rooms: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+    },
   });
 
   return User;
