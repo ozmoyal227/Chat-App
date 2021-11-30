@@ -19,6 +19,7 @@ const addRoomToUser = async (req, res) => {
       success: false,
       message: "Error adding room to user",
     });
+    return;
   }
 
   res.json({
