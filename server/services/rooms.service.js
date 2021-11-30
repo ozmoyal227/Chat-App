@@ -39,28 +39,27 @@ const addUserToRoom = async (roomId, userId) => {
     const room = await get(roomId);
     if (!room) {
       console.error(addUserToRoom.name, `Room ${roomId} not found`);
-      return null;
+      return false;
     }
-    console.log("===== room", JSON.stringify(room, null, 2));
 
     const userExist = room.users.find((id) => id === userId);
-    console.log("===== userExist?", JSON.stringify(userExist, null, 2));
     if (userExist) {
       console.error(addUserToRoom.name, `User is already in room`);
-      return;
+      return false;
     }
 
     const user = await usersService.get(userId);
     if (!user) {
       console.error(addUserToRoom.name, `User ${userId} not found`);
-      return null;
+      return false;
     }
 
     room.users = [...room.users, userId];
     await room.save();
+    return true;
   } catch (error) {
     console.error(addUserToRoom.name, "Error adding user to room", error);
-    return null;
+    return false;
   }
 };
 
@@ -81,10 +80,6 @@ const createLobbyIfNotExist = async () => {
         users: [],
       });
     }
-
-    await addUserToRoom(lobbyId, "40acae74-fde9-48d6-92ad-52fe704bdc5f");
-
-    console.log("Lobby Room", JSON.stringify(lobby, null, 2));
   } catch (error) {
     const msg = `${createLobbyIfNotExist.name} Error creating Lobby`;
     console.error(msg, error);

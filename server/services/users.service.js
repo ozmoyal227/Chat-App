@@ -32,28 +32,28 @@ const addRoomToUser = async (userId, roomId) => {
     const user = await User.findByPk(userId);
     if (!user) {
       console.error(addRoomToUser.name, `User ${userId} not found`);
-      return null;
+      return false;
     }
 
     const roomExist = user.rooms.find((id) => id === roomId);
 
     if (roomExist) {
       console.error(addRoomToUser.name, `User is already in room`);
-      return;
+      return false;
     }
 
     const room = await roomsService.get(roomId);
     if (!room) {
       console.error(addRoomToUser.name, `Room ${roomId} not found`);
-      return null;
+      return false;
     }
 
     user.rooms = [...user.rooms, roomId];
     await user.save();
-    return user;
+    return true;
   } catch (error) {
     console.error(addRoomToUser.name, "Error adding room to user");
-    return null;
+    return false;
   }
 };
 

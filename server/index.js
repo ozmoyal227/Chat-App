@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import path from "path";
+import routes from "./api/index.routes.js";
 import db from "./db-init.js";
 import roomsService from "./services/rooms.service.js";
 import usersService from "./services/users.service.js";
@@ -20,38 +21,11 @@ app.use(express.json());
 // =============
 // API
 // =============
-const baseRoute = "/api";
+// mount all routes on /api path
+app.use("/api", routes);
+
 app.get("/", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../client/index.html"));
-});
-app.get(baseRoute, (req, res) => {
-  res.json({ message: "Hello from server!" });
-});
-
-// POST user
-app.post(`${baseRoute}/users`, async (req, res) => {
-  const user = await usersService.addUser({
-    name: req.body.name,
-  });
-
-  res.json(user);
-});
-
-app.post(`${baseRoute}/users/:userId/rooms/:roomId`, async (req, res) => {
-  const user = await usersService.addRoomToUser(
-    req.params.userId,
-    req.params.roomId
-  );
-
-  res.json(user);
-});
-
-// POST room
-app.post(`${baseRoute}/rooms`, async (req, res) => {
-  const room = await roomsService.addRoom({
-    name: req.body.name,
-  });
-  res.json(room);
 });
 
 // =============
