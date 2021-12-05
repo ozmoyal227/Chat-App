@@ -32,11 +32,11 @@ app.set("view engine", "ejs");
 app.use("/api", routes);
 
 app.get("/login", (req, res) => {
-  res.render("login", { title: "Login | Chat" });
+  res.render("login", { title: "Login | Chat" , card_title: "Sign in"});
 });
 
 app.get("/register", (req, res) => {
-  res.render("register", { title: "Register | Chat" });
+  res.render("register", { title: "Register | Chat", card_title: "Register" });
 });
 
 // app.get("/", (req, res) => {
