@@ -1,12 +1,5 @@
 import usersService from "../../services/users.service.js";
-
-const create = async (req, res) => {
-  const user = await usersService.addUser({
-    name: req.body.name,
-  });
-
-  res.json(user);
-};
+import { BaseResponse } from "../models/response.js";
 
 const addRoomToUser = async (req, res) => {
   const isSuccess = await usersService.addRoomToUser(
@@ -14,21 +7,14 @@ const addRoomToUser = async (req, res) => {
     req.params.roomId
   );
 
-  if (!isSuccess) {
-    res.status(500).json({
-      success: false,
-      message: "Error adding room to user",
-    });
-    return;
-  }
-
-  res.json({
-    success: isSuccess,
-  });
+  res
+    .status(isSuccess ? 200 : 500)
+    .json(
+      new BaseResponse(isSuccess, isSuccess ? "" : "Unable to add room to user")
+    );
 };
 
 const usersController = {
-  create,
   addRoomToUser,
 };
 

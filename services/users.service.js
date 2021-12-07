@@ -9,14 +9,11 @@ const addUser = async (user) => {
   try {
     const { id, name, rooms } = await User.create({
       name: user.name,
+      password: user.password,
       rooms: [],
     });
 
-    return {
-      id,
-      name,
-      rooms,
-    };
+    return { id, name, rooms };
   } catch (error) {
     console.error(
       addUser.name,
@@ -68,6 +65,17 @@ const get = async (id) => {
   }
 };
 
-const usersService = { addUser, addRoomToUser, get };
+const getByName = async (name) => {
+  console.log(get.name, `Getting user by name ${name}`);
+  try {
+    const user = await User.findOne({ where: { name } });
+    return user;
+  } catch (error) {
+    console.error(get.name, "Error getting user by name", error);
+    return null;
+  }
+};
+
+const usersService = { addUser, addRoomToUser, get, getByName };
 
 export default usersService;

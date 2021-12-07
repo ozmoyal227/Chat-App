@@ -3,7 +3,7 @@ import usersService from "./users.service.js";
 
 const Room = db.rooms;
 // TODO: Unique id for lobby
-const lobbyId = "9e31193e-033e-407e-aa31-5ce304ed5eca";
+export const lobbyId = "9e31193e-033e-407e-aa31-5ce304ed5eca";
 
 const addRoom = async (room) => {
   console.log(addRoom.name, "Adding new room", JSON.stringify(room, null, 2));
