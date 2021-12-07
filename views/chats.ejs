@@ -1,0 +1,14 @@
+<div class="card p-3 bg-info"><h1>Hello from Chats</h1></div>
+<button onclick="logout()">Logout</button>
+
+<script>
+  const logout = async () => {
+    const resp = await fetch("/auth/logout", {
+      redirect: "follow",
+    });
+
+    if (resp.redirected) {
+      window.location.href = resp.url;
+    }
+  };
+</script>

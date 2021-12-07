@@ -9,8 +9,4 @@ routes.use("/auth", authRouter);
 routes.use("/users", userRouter);
 routes.use("/rooms", roomRouter);
 
-routes.get("/", (req, res) => {
-  res.json({ message: "Hello from API" });
-});
-
 export default routes;

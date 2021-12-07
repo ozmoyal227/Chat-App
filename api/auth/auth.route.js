@@ -4,11 +4,15 @@ import authController from "./auth.controller.js";
 const authRouter = express.Router();
 
 authRouter
-  /** POST /login - login a user */
-  .post("/login", authController.login);
+  .route("/login")
+  .get(authController.getLogin)
+  .post(authController.postLogin);
 
 authRouter
-  /** POST /register - register a new user */
-  .post("/register", authController.register);
+  .route("/register")
+  .get(authController.getRegister)
+  .post(authController.postRegister);
+
+authRouter.get("/logout", authController.logout);
 
 export default authRouter;
