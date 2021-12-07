@@ -1,11 +1,14 @@
 import roomsService from "../../services/rooms.service.js";
+import { BaseResponse, Response } from "../models/response.js";
 
 const create = async (req, res) => {
   const room = await roomsService.addRoom({
     name: req.body.name,
   });
 
-  res.json(room);
+  res
+    .status(room ? 200 : 500)
+    .json(new Response(!!room, room, room ? "" : "Unable to add room"));
 };
 
 const addUserToRoom = async (req, res) => {
@@ -14,17 +17,11 @@ const addUserToRoom = async (req, res) => {
     req.params.userId
   );
 
-  if (!isSuccess) {
-    res.status(500).json({
-      success: false,
-      message: "Error adding user to room",
-    });
-    return;
-  }
-
-  res.json({
-    success: isSuccess,
-  });
+  res
+    .status(isSuccess ? 200 : 500)
+    .json(
+      new BaseResponse(isSuccess, isSuccess ? "" : "Unable to add user to room")
+    );
 };
 
 const usersController = {
