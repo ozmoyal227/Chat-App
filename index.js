@@ -1,6 +1,9 @@
 // @ts-nocheck
 import "dotenv/config";
 import express from "express";
+import http from "http";
+import { Server } from "socket.io";
+
 import path from "path";
 import { fileURLToPath } from "url";
 import routes from "./api/index.routes.js";
@@ -9,10 +12,15 @@ import roomsService from "./services/rooms.service.js";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
 
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3001;
-const app = express();
+
+
 
 app.use(express.json());
 
@@ -58,6 +66,11 @@ app.get("/", (req, res) => {
   res.redirect("/chats");
 });
 
+app.get("/main", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../chat-app/index.html"));
+});
+
+
 app.get("/chats", isAuthMiddleware, (req, res) => {
   res.render("chats", {
     layout: "./layouts/main",
@@ -67,7 +80,11 @@ app.get("/chats", isAuthMiddleware, (req, res) => {
 // =============
 // Socket IO
 // =============
-
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+  });
+});
 // =============
 // Server
 // =============
