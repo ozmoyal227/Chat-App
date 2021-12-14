@@ -9,6 +9,13 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
     <style>
       #headline {
         background-color: transparent;
@@ -52,5 +59,28 @@
         </div>
       </div>
     </div>
+    <script>
+      async function request(method, url, data) {
+        try {
+          const resp = await fetch(url, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: data ? JSON.stringify(data) : {},
+            redirect: "follow",
+          });
+
+          if (resp.redirected) {
+            window.location.href = resp.url;
+          }
+
+          return resp;
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
+      }
+    </script>
   </body>
 </html>

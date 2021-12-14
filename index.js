@@ -13,10 +13,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3001;
 const app = express();
+const oneDay = 1000 * 60 * 60 * 24;
 
 app.use(express.json());
+app.use(express.static(__dirname + "/public"));
 
-const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   session({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",

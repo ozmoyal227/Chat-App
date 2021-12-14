@@ -1,35 +1,24 @@
 <form action="" onsubmit="return onLogin(event)">
   <% if (locals.err_msg) { %>
-  <h2><%= err_msg %></h2>
+  <h3><%= err_msg %></h3>
   <% } %>
 
   <div class="input-group mb-3 justify-content-center">
     <div class="input-group-append">
       <input
+        required
         name="name"
         type="text"
         class="form-control input_user"
-        placeholder="username"
+        placeholder="Username"
       />
       <input
+        required
         name="password"
         type="password"
         class="form-control input_pass"
-        placeholder="password"
+        placeholder="Password"
       />
-
-      <div class="form-group">
-        <div class="custom-control custom-checkbox">
-          <input
-            type="checkbox"
-            class="custom-control-input"
-            id="customControlInline"
-          />
-          <label class="custom-control-label" for="customControlInline"
-            >Remember me</label
-          >
-        </div>
-      </div>
 
       <div class="d-flex justify-content-end mt-3 login_container">
         <a class="btn btn-primary" href="/auth/register" role="button"
@@ -49,26 +38,8 @@
     const name = form.get("name");
     const password = form.get("password");
 
-    try {
-      const resp = await fetch("/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, password }),
-        redirect: "follow",
-      });
-
-      if (resp.redirected) {
-        window.location.href = resp.url;
-        return;
-      }
-
-      if (!resp.ok) {
-        alert("Login Error");
-      }
-    } catch (error) {
-      console.error(error);
+    const resp = await request("POST", "/auth/login", { name, password });
+    if (!resp || !resp.ok) {
       alert("Login Error");
       return;
     }

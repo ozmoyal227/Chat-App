@@ -1,34 +1,74 @@
-<form>
+<form action="" onsubmit="return onRegister(event)">
+  <% if (locals.err_msg) { %>
+  <h3><%= err_msg %></h3>
+  <% } %>
   <div class="input-group mb-3 justify-content-center">
     <div class="input-group-append">
       <input
+        required
+        name="name"
         type="text"
-        name=""
         class="form-control input_user"
-        value=""
-        placeholder="username"
+        placeholder="Username"
       />
+
       <input
+        id="password"
+        name="password"
         type="password"
-        name=""
         class="form-control input_pass"
-        value=""
-        placeholder="password"
+        placeholder="Password"
+        required
       />
+
       <input
+        id="retypePassword"
+        name="passwordConfirmation"
         type="password"
-        name=""
         class="form-control input_pass"
-        value=""
-        placeholder="confirm password"
+        placeholder="Confirm Password"
+        required
       />
 
       <div class="d-flex justify-content-end mt-3 login_container">
         <a class="btn btn-primary" href="/auth/login" role="button">Sign in </a>
-        <button type="button" name="button" class="btn login_btn border">
+        <button type="submit" name="button" class="btn login_btn border">
           Register
         </button>
       </div>
     </div>
   </div>
 </form>
+
+<script>
+  (function () {
+    $("#retypePassword").on("input", function () {
+      const password = $("#password").get(0);
+      const retypePassword = $(this).get(0);
+
+      if (
+        !password ||
+        !retypePassword ||
+        password.value !== retypePassword.value
+      ) {
+        retypePassword.setCustomValidity("Password mismatch");
+      } else {
+        retypePassword.setCustomValidity("");
+      }
+    });
+  })();
+
+  async function onRegister(e) {
+    e.preventDefault();
+
+    const form = new FormData(e.target);
+    const name = form.get("name");
+    const password = form.get("password");
+
+    const resp = await request("POST", "/auth/register", { name, password });
+    if (!resp || !resp.ok) {
+      alert("Register Error");
+      return;
+    }
+  }
+</script>

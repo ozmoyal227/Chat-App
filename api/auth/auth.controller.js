@@ -45,22 +45,26 @@ const getRegister = (req, res) => {
 };
 
 const postRegister = async (req, res) => {
-  const isSuccess = await authService.register({
-    name: req.body.name,
-    password: req.body.password,
-  });
+  const { name, password } = req.body;
 
-  if (!isSuccess) {
-    res.render("register", {
-      layout: "./layouts/auth",
-      title: "Register | Chat",
-      card_title: "Register",
-      err_msg: "Unable to register",
-    });
+  if (!name || !password) {
+    res
+      .status(400)
+      .send(new BaseResponse(false, "Invalid username or password"));
     return;
   }
 
-  res.redirect("/login");
+  const isSuccess = await authService.register({
+    name,
+    password,
+  });
+
+  if (!isSuccess) {
+    res.status(500).send();
+    return;
+  }
+
+  res.redirect("/auth/login");
 };
 
 const logout = (req, res) => {

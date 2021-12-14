@@ -8,9 +8,59 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
   </head>
 
   <body>
-    <div class="card-body"><%- body %></div>
+    <div class="h-100 d-flex flex-column">
+      <header
+        class="
+          border
+          p-2
+          shadow-sm
+          d-flex
+          align-items-center
+          justify-content-between
+        "
+      >
+        <h1 class="mb-0">Chats</h1>
+        <button onclick="logout()">Logout</button>
+      </header>
+      <main class="flex-grow-1"><%- body %></main>
+    </div>
+    <script>
+      async function request(method, url, data) {
+        try {
+          const resp = await fetch(url, {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: data ? JSON.stringify(data) : undefined,
+            redirect: "follow",
+          });
+
+          if (resp.redirected) {
+            window.location.href = resp.url;
+          }
+
+          return resp;
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
+      }
+
+      async function logout() {
+        await request("GET", "/auth/logout");
+      }
+    </script>
   </body>
 </html>
