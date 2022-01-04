@@ -13,6 +13,7 @@
 
 <div class="container-fluid h-100">
   <div class="row h-100">
+    <!-- User Panel -->
     <div class="col-md-3 bg-info">
       <div class="card-box text-center">
         <section>
@@ -23,36 +24,28 @@
               alt="User Pic"
             />
           </div>
-          <h4 class="m-0">Rajnish Kumar</h4>
+          <h4 class="m-0"><% if (locals.user) { %> <%= user.name %> <% } %></h4>
         </section>
         <hr class="m-4" />
         <section>Bottom</section>
       </div>
     </div>
 
+    <!-- Chat -->
     <div class="p-0 col-md-9 bg-danger">
       <div class="d-flex flex-column h-100">
+        <!-- Messages -->
         <div
           id="chat-content"
           class="overflow-auto d-flex flex-column flex-grow-1 p-3"
         >
-          <div class="media media-chat d-flex align-self-start">
-            <img
-              class="avatar align-self-start"
-              src="https://img.icons8.com/color/36/000000/administrator-male.png"
-              alt="..."
-            />
-            <div class="media-body">
-              <p>Hi</p>
-              <p>How are you ...???</p>
-              <p>
-                What are you doing tomorrow?<br />
-                Can we come up a bar?
-              </p>
-              <p class="meta"><time datetime="2018">23:58</time></p>
-            </div>
-          </div>
+          <!-- Others message -->
+          <% for (var i = 0; i < lobby.messages.length; i++) { %>
 
+          <!-- Date -->
+          <% if (!lobby.messages[i-1] ||
+          !moment(lobby.messages[i].sentAt).isSame(lobby.messages[i-1].sentAt,
+          'day')) { %>
           <div
             class="
               media media-meta-day
@@ -61,75 +54,71 @@
               my-3
             "
           >
-            Today
+            <%= moment(lobby.messages[i].sentAt).format("MMM D") %> - <%=
+            moment(lobby.messages[i].sentAt).fromNow() %>
           </div>
-
+          <% } %> <% if (lobby.messages[i].senderId !== authUserId) { %>
           <div
             class="
-              media media-chat media-chat-reverse
-              text-end
+              media media-chat
               d-flex
+              media-chat-reverse
+              text-end
               flex-row-reverse
               align-self-end
             "
           >
+            <% } else { %>
+            <div class="media media-chat d-flex align-self-start">
+              <% } %>
+
+              <img
+                class="avatar align-self-start"
+                src="https://img.icons8.com/color/36/000000/administrator-male.png"
+                alt="..."
+              />
+              <div class="media-body">
+                <p>
+                  <strong><%= lobby.messages[i].senderName %></strong>
+                  <br />
+                  <span><%= lobby.messages[i].text %></span>
+                </p>
+                <p class="meta">
+                  <span
+                    ><%= moment(lobby.messages[i].sentAt).format("hh:mm A")
+                    %></span
+                  >
+                </p>
+              </div>
+            </div>
+
+            <% } %>
+          </div>
+
+          <!-- Add Message -->
+          <div
+            class="
+              publisher
+              bt-1
+              border-light
+              p-3
+              bg-white
+              d-flex
+              align-items-center
+            "
+          >
             <img
-              class="avatar align-self-start"
+              class="avatar avatar-xs"
               src="https://img.icons8.com/color/36/000000/administrator-male.png"
               alt="..."
             />
-            <div class="media-body">
-              <p>Hiii, I'm good.</p>
-              <p>How are you doing?</p>
-              <p>Long time no see! Tomorrow office. will be free on sunday.</p>
-              <p class="meta"><time datetime="2018">00:06</time></p>
-            </div>
-          </div>
-
-          <div class="media media-chat align-self-start d-flex">
-            <img
-              class="avatar align-self-start"
-              src="https://img.icons8.com/color/36/000000/administrator-male.png"
-              alt="..."
+            <input
+              class="publisher-input flex-grow-1"
+              type="text"
+              placeholder="Write something"
             />
-            <div class="media-body">
-              <p>Okay</p>
-              <p>We will go on sunday?</p>
-              <p class="meta"><time datetime="2018">00:07</time></p>
-            </div>
+            <button>Send</button>
           </div>
-        </div>
-
-        <div
-          class="
-            publisher
-            bt-1
-            border-light
-            p-3
-            bg-white
-            d-flex
-            align-items-center
-          "
-        >
-          <img
-            class="avatar avatar-xs"
-            src="https://img.icons8.com/color/36/000000/administrator-male.png"
-            alt="..."
-          />
-          <input
-            class="publisher-input"
-            type="text"
-            placeholder="Write something"
-          />
-          <span class="publisher-btn file-group">
-            <i class="fa fa-paperclip file-browser"></i> <input type="file" />
-          </span>
-          <a class="publisher-btn" href="#" data-abc="true"
-            ><i class="fa fa-smile"></i
-          ></a>
-          <a class="publisher-btn text-info" href="#" data-abc="true"
-            ><i class="fa fa-paper-plane"></i
-          ></a>
         </div>
       </div>
     </div>

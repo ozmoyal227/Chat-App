@@ -8,6 +8,7 @@ import db from "./db-init.js";
 import roomsService from "./services/rooms.service.js";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
+import chatsService from "./services/chats.service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,11 +39,6 @@ app.set("view engine", "ejs");
   await roomsService.createLobbyIfNotExist();
 })();
 
-// =============
-// API
-// =============
-app.use("/", routes);
-
 app.use(function (req, res, next) {
   req.isAuthenticated = () => {
     const session = req.session;
@@ -51,27 +47,24 @@ app.use(function (req, res, next) {
   next();
 });
 
-function isAuthMiddleware(req, res, next) {
-  req.isAuthenticated() ? next() : res.redirect("/auth/login");
-}
+app.use("/", routes);
 
-app.get("/", (req, res) => {
-  res.redirect("/chats");
-});
+app.post("/message", async (req, res) => {
+  const { roomId, message } = req.body;
+  const isSuccess = await chatsService.addMessage(roomId, message);
 
-app.get("/chats", isAuthMiddleware, (req, res) => {
-  res.render("chats", {
-    layout: "./layouts/main",
-  });
+  if (!isSuccess) {
+    res.status(500).json({ message: "Failure" });
+    return;
+  }
+
+  res.json({ message: "Success" });
 });
 
 // =============
 // Socket IO
 // =============
 
-// =============
-// Server
-// =============
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });

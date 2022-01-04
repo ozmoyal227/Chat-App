@@ -7,9 +7,9 @@ const login = async ({ name, password }) => {
   console.log(login.name, `User ${name} trying to login`);
 
   try {
-    const isUserExist = !!(await User.findOne({ where: { name, password } }));
-    console.log(login.name, `User exists? `, isUserExist);
-    return isUserExist;
+    const user = await User.findOne({ where: { name, password } });
+    console.log(login.name, `User exists? `, !!user);
+    return user.id;
   } catch (error) {
     console.error(login.name, "Error while trying to login user", error);
     return false;

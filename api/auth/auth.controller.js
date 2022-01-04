@@ -19,16 +19,17 @@ const postLogin = async (req, res) => {
     return;
   }
 
-  const isSuccess = await authService.login({
+  const userId = await authService.login({
     name,
     password,
   });
 
   const session = req.session;
-  session.isAuthenticated = isSuccess;
+  session.userId = userId;
+  session.isAuthenticated = !!userId;
   session.username = name;
 
-  if (isSuccess) {
+  if (userId) {
     res.redirect("/");
     return;
   }

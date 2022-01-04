@@ -17,6 +17,10 @@ const initRoom = (sequelize) => {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
+    messages: {
+      type: DataTypes.JSON,
+      defaultValue: "",
+    },
   });
 
   return Room;
