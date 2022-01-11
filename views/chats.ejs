@@ -3,11 +3,14 @@
     width: 8vw;
   }
 
-  .media-body > p:not(:last-child) {
+  /* .media-body > p:not(:last-child) {
     background: #fff;
     padding: 0.5rem;
     border-radius: 5px;
     margin-bottom: 0.5rem;
+  } */
+  .media.media-chat {
+    /* min-width: 20%; */
   }
 </style>
 
@@ -32,7 +35,7 @@
     </div>
 
     <!-- Chat -->
-    <div class="p-0 col-md-9 bg-danger">
+    <div class="p-0 col-md-9 bg-danger h-100">
       <div class="d-flex flex-column h-100">
         <!-- Messages -->
         <div
@@ -57,7 +60,7 @@
             <%= moment(lobby.messages[i].sentAt).format("MMM D") %> - <%=
             moment(lobby.messages[i].sentAt).fromNow() %>
           </div>
-          <% } %> <% if (lobby.messages[i].senderId !== authUserId) { %>
+          <% } %> <% if (lobby.messages[i].senderId !== user.id) { %>
           <div
             class="
               media media-chat
@@ -66,10 +69,11 @@
               text-end
               flex-row-reverse
               align-self-end
+              mb-2
             "
           >
             <% } else { %>
-            <div class="media media-chat d-flex align-self-start">
+            <div class="media media-chat d-flex align-self-start mb-3">
               <% } %>
 
               <img
@@ -77,13 +81,16 @@
                 src="https://img.icons8.com/color/36/000000/administrator-male.png"
                 alt="..."
               />
-              <div class="media-body">
-                <p>
+              <div class="card p-2 media-body flex-grow-1">
+                <p class="mb-0">
                   <strong><%= lobby.messages[i].senderName %></strong>
-                  <br />
-                  <span><%= lobby.messages[i].text %></span>
                 </p>
-                <p class="meta">
+                <p class="mb-0"><%= lobby.messages[i].text %></p>
+                <!-- <p class="mb-1 d-flex flex-column">
+                  <strong><%= lobby.messages[i].senderName %></strong>
+                  <span><%= lobby.messages[i].text %></span>
+                </p> -->
+                <p class="meta m-0">
                   <span
                     ><%= moment(lobby.messages[i].sentAt).format("hh:mm A")
                     %></span
@@ -96,31 +103,22 @@
           </div>
 
           <!-- Add Message -->
-          <div
-            class="
-              publisher
-              bt-1
-              border-light
-              p-3
-              bg-white
-              d-flex
-              align-items-center
-            "
-          >
-            <img
-              class="avatar avatar-xs"
-              src="https://img.icons8.com/color/36/000000/administrator-male.png"
-              alt="..."
-            />
-            <input
-              class="publisher-input flex-grow-1"
-              type="text"
-              placeholder="Write something"
-            />
-            <button>Send</button>
-          </div>
+          <%- include('./partials/add-message.ejs', { user:user, chatId:
+          lobby.id}) %>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  const onNewMessageReceived = () => {
+    // 1. Add message to UI #chat-content
+
+    // n. scroll to bottom of chat-content
+    $("#chat-content").animate(
+      { scrollTop: $("#chat-content").prop("scrollHeight") },
+      500
+    );
+  };
+</script>
