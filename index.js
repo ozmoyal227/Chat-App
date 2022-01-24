@@ -8,13 +8,17 @@ import db from "./db-init.js";
 import roomsService from "./services/rooms.service.js";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
-import chatsService from "./services/chats.service.js";
+import socketService from "./services/socket.service.js";
+import { Server as SocketIoServer } from "socket.io";
+import * as http from "http";
 
+const oneDay = 1000 * 60 * 60 * 24;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
+
 const app = express();
-const oneDay = 1000 * 60 * 60 * 24;
+const server = http.createServer(app);
 
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));
@@ -49,22 +53,28 @@ app.use(function (req, res, next) {
 
 app.use("/", routes);
 
-app.post("/message", async (req, res) => {
-  const { roomId, message } = req.body;
-  const isSuccess = await chatsService.addMessage(roomId, message);
-
-  if (!isSuccess) {
-    res.status(500).json({ message: "Failure" });
-    return;
-  }
-
-  res.json({ message: "Success" });
-});
-
 // =============
 // Socket IO
 // =============
+const io = new SocketIoServer(server);
+const onSocketConnection = (socket) => {
+  console.log("a user connected");
+  socketService.registerChatHandlers(io, socket);
+};
+io.on("connection", onSocketConnection);
 
-app.listen(PORT, () => {
+// io.on("connection", (socket) => {
+//   console.log("a user connected");
+
+//   socket.on("disconnect", () => {
+//     console.log("user disconnected");
+//   });
+
+//   socket.on("connect_error", (err) => {
+//     console.log(`connect_error due to ${err.message}`);
+//   });
+// });
+
+server.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}/ `);
 });

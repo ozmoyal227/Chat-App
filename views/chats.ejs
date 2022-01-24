@@ -86,10 +86,6 @@
                   <strong><%= lobby.messages[i].senderName %></strong>
                 </p>
                 <p class="mb-0"><%= lobby.messages[i].text %></p>
-                <!-- <p class="mb-1 d-flex flex-column">
-                  <strong><%= lobby.messages[i].senderName %></strong>
-                  <span><%= lobby.messages[i].text %></span>
-                </p> -->
                 <p class="meta m-0">
                   <span
                     ><%= moment(lobby.messages[i].sentAt).format("hh:mm A")
@@ -112,13 +108,41 @@
 </div>
 
 <script>
-  const onNewMessageReceived = () => {
-    // 1. Add message to UI #chat-content
+  const socket = io();
+  const chatId = "<%= lobby?.id %>";
 
+  const onConnect = () => {
+    console.log("User connected...");
+    socket.emit("chat:join", chatId);
+  };
+
+  const onNewMessageReceived = (message) => {
+    console.log(message);
+    // 1. Add message to UI #chat-content
+    $("#chat-content").append(`
+<div class="media media-chat d-flex align-self-start mb-3">            
+  <img class="avatar align-self-start" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
+  <div class="card p-2 media-body flex-grow-1">
+    <p class="mb-0">
+      <strong>${message.senderName}</strong>
+    </p>
+    <p class="mb-0">${message.text}</p>
+  
+    <p class="meta m-0">
+      <span>${new Date()}</span>
+    </p>
+  </div>
+</div>
+`);
     // n. scroll to bottom of chat-content
     $("#chat-content").animate(
       { scrollTop: $("#chat-content").prop("scrollHeight") },
       500
     );
   };
+
+  socket.on("connect", onConnect);
+  socket.on("message:add", (message) => {
+    onNewMessageReceived(message);
+  });
 </script>
