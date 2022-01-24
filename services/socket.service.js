@@ -11,7 +11,7 @@ const registerChatHandlers = (io, socket) => {
       isSuccess = await chatsService.addMessage(chatId, message);
 
       if (isSuccess) {
-        socket.emit("message:add", message);
+        io.emit("message:add", message);
       }
     } finally {
       if (callback) callback(isSuccess);

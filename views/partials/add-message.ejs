@@ -18,38 +18,30 @@
   const userId = "<%= user.id %>";
   const userName = "<%= user.name %>";
 
-  $("#sendButton").on("click", function () {
-    onSendMessage();
-  });
+  (() => {
+    $("#sendButton").keypress(function (event) {
+      var keycode = event.keyCode ? event.keyCode : event.which;
+      if (keycode == "13") {
+        alert('You pressed a "enter" key in textbox');
+      }
+    });
 
-  async function onSendMessage() {
-    const messageText = $("#messageInput").val();
+    $("#sendButton").on("click", function () {
+      onSendMessage();
+    });
 
-    const message = {
-      senderId: userId,
-      senderName: userName,
-      text: messageText,
-    };
+    async function onSendMessage() {
+      const messageText = $("#messageInput").val();
 
-    socket.emit(
-      "message:add",
-      message,
-      chatId /*, () =>
-      addMessage(message)
-    */
-    );
+      const message = {
+        senderId: userId,
+        senderName: userName,
+        text: messageText,
+      };
 
-    // const resp = await request("POST", `/chats/${chatId}/messages`, {
-    //   message: {
-    //     senderId: userId,
-    //     senderName: userName,
-    //     text: messageText,
-    //   },
-    // });
+      socket.emit("message:add", message, chatId);
 
-    // if (!resp || !resp.ok) {
-    //   alert("error adding message");
-    //   return;
-    // }
-  }
+      $("#messageInput").val("");
+    }
+  })();
 </script>
