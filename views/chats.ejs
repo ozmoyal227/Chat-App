@@ -43,7 +43,7 @@
           class="overflow-auto d-flex flex-column flex-grow-1 p-3"
         >
           <!-- Others message -->
-          <% for (var i = 0; i < lobby.messages.length; i++) { %>
+          <% for (var i = 0; i < lobby.messages?.length ?? 0; i++) { %>
 
           <!-- Date -->
           <% if (!lobby.messages[i-1] ||
@@ -86,6 +86,22 @@
                   <strong><%= lobby.messages[i].senderName %></strong>
                 </p>
                 <p class="mb-0"><%= lobby.messages[i].text %></p>
+                <% if (lobby.messages[i].file?.name){ %>
+                <p class="mb-0 bg-warning">
+                  <%= lobby.messages[i].file.name %>
+                </p>
+                <% } %>
+
+                <!-- Image Preview -->
+                <% if (lobby.messages[i].file?.type &&
+                isSupportedPreviewType(lobby.messages[i].file.type)){ %>
+                <div>
+                  <img
+                    src="data:<%= lobby.messages[i].file.type %>;base64, <%= lobby.messages[i].file.data %>"
+                  />
+                </div>
+                <% } %>
+
                 <p class="meta m-0">
                   <span
                     ><%= moment(lobby.messages[i].sentAt).format("hh:mm A")
@@ -118,27 +134,58 @@
 
   const onNewMessageReceived = (message) => {
     console.log(message);
-    // 1. Add message to UI #chat-content
-    $("#chat-content").append(`
-<div class="media media-chat d-flex align-self-start mb-3">            
-  <img class="avatar align-self-start" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
-  <div class="card p-2 media-body flex-grow-1">
-    <p class="mb-0">
-      <strong>${message.senderName}</strong>
-    </p>
-    <p class="mb-0">${message.text}</p>
-  
-    <p class="meta m-0">
-      <span>${new Date()}</span>
-    </p>
-  </div>
-</div>
-`);
-    // n. scroll to bottom of chat-content
+    // Add message to UI #chat-content
+    const newMessage = createNewMessage(
+      message.senderName,
+      message.text,
+      message.sentAt,
+      message.file
+    );
+    $("#chat-content").append(newMessage);
+    // scroll to bottom of chat-content
     $("#chat-content").animate(
       { scrollTop: $("#chat-content").prop("scrollHeight") },
       500
     );
+  };
+
+  const createNewMessage = (senderName, text, sentAt, file) => `
+  <div class="media media-chat d-flex align-self-start mb-3">
+    <img class="avatar align-self-start" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
+    <div class="card p-2 media-body flex-grow-1">
+      <p class="mb-0">
+        <strong>${senderName}</strong>
+      </p>
+      <p class="mb-0">${text}</p>
+      ${
+        file?.name
+          ? `<p class="mb-0 bg-warning">
+              ${file?.name}
+            </p>`
+          : ""
+      }
+      ${
+        file?.type && isSupportedPreviewType(file.type)
+          ? `<div>
+            <img src="data:${file.type};base64, ${file.data}" />
+          </div>`
+          : ""
+      }
+      <p class="meta m-0">
+        <span>${moment(sentAt).format("hh:mm A")}</span>
+      </p>
+    </div>
+  </div>
+  `;
+
+  const isSupportedPreviewType = (type) => {
+    const supportedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/svg+xml",
+    ];
+    return !!supportedTypes.find((t) => type === t);
   };
 
   socket.on("connect", onConnect);

@@ -14,6 +14,15 @@ const getChats = async (req, res) => {
     },
     lobby: lobby,
     moment: moment,
+    isSupportedPreviewType: (type) => {
+      const supportedTypes = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/svg+xml",
+      ];
+      return !!supportedTypes.find((t) => type === t);
+    },
   });
 };
 

@@ -10,7 +10,10 @@
     placeholder="Write something"
     id="messageInput"
   />
-  <button id="sendButton">Send</button>
+  <div class="d-flex">
+    <input class="form-control" type="file" id="fileInput" />
+    <button id="sendButton">Send</button>
+  </div>
 </div>
 
 <script>
@@ -18,30 +21,79 @@
   const userId = "<%= user.id %>";
   const userName = "<%= user.name %>";
 
+  let fileName = "";
+  let fileBase64 = "";
+  let fileType = "";
+
+  const onFileInputChange = (e) => {
+    // get a reference to the file
+    const file = e.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    fileName = file.name;
+    fileType = file.type;
+
+    // encode the file using the FileReader API
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // use a regex to remove data url part
+      const base64String = reader.result
+        .replace("data:", "")
+        .replace(/^.+,/, "");
+
+      fileBase64 = base64String;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const reset = () => {
+    $("#messageInput").val("");
+    if (fileName) resetFileInput();
+    fileBase64 = "";
+    fileName = "";
+    fileType = "";
+  };
+
+  const resetFileInput = () => {
+    $("#fileInput").val("");
+  };
+
+  async function onSendMessage() {
+    const messageText = $("#messageInput").val();
+
+    if (!messageText && !fileName) {
+      return;
+    }
+
+    const message = {
+      senderId: userId,
+      senderName: userName,
+      text: messageText,
+      file: fileName
+        ? {
+            name: fileName,
+            type: fileType,
+            data: fileBase64,
+          }
+        : null,
+    };
+
+    socket.emit("message:add", message, chatId);
+
+    reset();
+  }
+
+  //////////
   (() => {
-    $("#sendButton").keypress(function (event) {
-      var keycode = event.keyCode ? event.keyCode : event.which;
-      if (keycode == "13") {
-        alert('You pressed a "enter" key in textbox');
-      }
+    $("#fileInput").on("change", function (e) {
+      onFileInputChange(e);
     });
 
     $("#sendButton").on("click", function () {
       onSendMessage();
     });
-
-    async function onSendMessage() {
-      const messageText = $("#messageInput").val();
-
-      const message = {
-        senderId: userId,
-        senderName: userName,
-        text: messageText,
-      };
-
-      socket.emit("message:add", message, chatId);
-
-      $("#messageInput").val("");
-    }
   })();
 </script>
