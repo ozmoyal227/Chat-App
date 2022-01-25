@@ -18,7 +18,7 @@
   <div class="row h-100">
     <!-- User Panel -->
     <div class="col-md-3 bg-info">
-      <div class="card-box text-center">
+      <div class="card-box text-center px-2">
         <section>
           <div class="user-pic mx-auto my-4">
             <img
@@ -29,8 +29,26 @@
           </div>
           <h4 class="m-0"><% if (locals.user) { %> <%= user.name %> <% } %></h4>
         </section>
-        <hr class="m-4" />
-        <section>Bottom</section>
+        <hr class="my-4" />
+        <section>
+          <!-- Files -->
+          <ul class="list-group">
+            <% for (var i = 0; i < user?.files?.length ?? 0; i++) { %>
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              <%= user.files[i].name %>
+              <a
+                class="btn btn-outline-primary"
+                download="<%= user.files[i].name %>"
+                href="data:<%= user.files[i].type %>;base64, <%= user.files[i].data %>"
+              >
+                <i class="bi bi-file-earmark-arrow-down"></i>
+              </a>
+            </li>
+            <% } %>
+          </ul>
+        </section>
       </div>
     </div>
 
@@ -50,27 +68,14 @@
           !moment(lobby.messages[i].sentAt).isSame(lobby.messages[i-1].sentAt,
           'day')) { %>
           <div
-            class="
-              media media-meta-day
-              text-center
-              border-bottom border-top
-              my-3
-            "
+            class="media media-meta-day text-center border-bottom border-top my-3"
           >
             <%= moment(lobby.messages[i].sentAt).format("MMM D") %> - <%=
             moment(lobby.messages[i].sentAt).fromNow() %>
           </div>
           <% } %> <% if (lobby.messages[i].senderId !== user.id) { %>
           <div
-            class="
-              media media-chat
-              d-flex
-              media-chat-reverse
-              text-end
-              flex-row-reverse
-              align-self-end
-              mb-2
-            "
+            class="media media-chat d-flex media-chat-reverse text-end flex-row-reverse align-self-end mb-2"
           >
             <% } else { %>
             <div class="media media-chat d-flex align-self-start mb-3">
@@ -86,20 +91,38 @@
                   <strong><%= lobby.messages[i].senderName %></strong>
                 </p>
                 <p class="mb-0"><%= lobby.messages[i].text %></p>
-                <% if (lobby.messages[i].file?.name){ %>
-                <p class="mb-0 bg-warning">
-                  <%= lobby.messages[i].file.name %>
-                </p>
-                <% } %>
 
-                <!-- Image Preview -->
-                <% if (lobby.messages[i].file?.type &&
-                isSupportedPreviewType(lobby.messages[i].file.type)){ %>
-                <div>
+                <% if (lobby.messages[i].file?.name){ %>
+                <div class="file card">
+                  <!-- Image Preview -->
+                  <% if (lobby.messages[i].file?.type &&
+                  isSupportedPreviewType(lobby.messages[i].file.type)){ %>
                   <img
+                    class="img-fluid p-2"
                     src="data:<%= lobby.messages[i].file.type %>;base64, <%= lobby.messages[i].file.data %>"
                   />
+                  <% } %>
+                  <div class="card-body text-center">
+                    <h5 class="card-title">
+                      <%= lobby.messages[i].file.name %>
+                    </h5>
+                    <a
+                      class="btn btn-outline-primary"
+                      download="<%= lobby.messages[i].file.name %>"
+                      href="data:<%= lobby.messages[i].file.type %>;base64, <%= lobby.messages[i].file.data %>"
+                      ><i class="bi bi-file-earmark-arrow-down"></i
+                    ></a>
+
+                    <button
+                      id="addFileToUserBtn"
+                      class="btn btn-primary"
+                      onclick="onAddFileToUser('<%= JSON.stringify(lobby.messages[i].file) %>' )"
+                    >
+                      <i class="bi bi-file-earmark-plus"></i>
+                    </button>
+                  </div>
                 </div>
+
                 <% } %>
 
                 <p class="meta m-0">
@@ -126,6 +149,7 @@
 <script>
   const socket = io();
   const chatId = "<%= lobby?.id %>";
+  const userId = "<%= user?.id %>";
 
   const onConnect = () => {
     console.log("User connected...");
@@ -136,6 +160,7 @@
     console.log(message);
     // Add message to UI #chat-content
     const newMessage = createNewMessage(
+      message.senderId,
       message.senderName,
       message.text,
       message.sentAt,
@@ -149,34 +174,56 @@
     );
   };
 
-  const createNewMessage = (senderName, text, sentAt, file) => `
-  <div class="media media-chat d-flex align-self-start mb-3">
-    <img class="avatar align-self-start" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
-    <div class="card p-2 media-body flex-grow-1">
-      <p class="mb-0">
-        <strong>${senderName}</strong>
-      </p>
-      <p class="mb-0">${text}</p>
-      ${
-        file?.name
-          ? `<p class="mb-0 bg-warning">
-              ${file?.name}
-            </p>`
-          : ""
-      }
-      ${
-        file?.type && isSupportedPreviewType(file.type)
-          ? `<div>
-            <img src="data:${file.type};base64, ${file.data}" />
-          </div>`
-          : ""
-      }
-      <p class="meta m-0">
-        <span>${moment(sentAt).format("hh:mm A")}</span>
-      </p>
-    </div>
-  </div>
-  `;
+  const createNewMessage = (senderId, senderName, text, sentAt, file) => {
+    return `
+        <div class="media media-chat d-flex ${
+          senderId === userId ? "align-self-start" : "align-self-end"
+        } mb-3">
+          <img class="avatar align-self-start" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
+          <div class="card p-2 media-body flex-grow-1">
+            <p class="mb-0">
+              <strong>${senderName}</strong>
+            </p>
+            <p class="mb-0">${text}</p>
+
+            ${
+              !file?.name
+                ? ""
+                : `<div class="file card">
+                      ${
+                        file?.type && isSupportedPreviewType(file.type)
+                          ? `<img class="img-fluid p-2" src="data:${file.type};base64, ${file.data}" />`
+                          : ""
+                      }
+                      <div class="card-body text-center">
+                        <h5 class="card-title">${file.name}</h5>
+                        <a class="btn btn-outline-primary" download="${
+                          file.name
+                        }" href="data:${file.type};base64, ${
+                    file.data
+                  }"><i class="bi bi-file-earmark-arrow-down"></i>
+                        </a>
+
+                        <button
+                          class="btn btn-primary"
+                          onclick='onAddFileToUser(${JSON.stringify(
+                            JSON.stringify(file)
+                          )})'
+                        >
+                          <i class="bi bi-file-earmark-plus"></i>
+                        </button>
+                      </div>
+                  </div>`
+            }
+
+
+            <p class="meta m-0">
+              <span>${moment(sentAt).format("hh:mm A")}</span>
+            </p>
+          </div>
+        </div>
+        `;
+  };
 
   const isSupportedPreviewType = (type) => {
     const supportedTypes = [
@@ -192,4 +239,13 @@
   socket.on("message:add", (message) => {
     onNewMessageReceived(message);
   });
+
+  const onAddFileToUser = async (file) => {
+    const resp = await request("POST", "/users/files", JSON.parse(file));
+
+    if (!resp || !resp.ok) {
+      alert("Error adding file to user");
+      return;
+    }
+  };
 </script>

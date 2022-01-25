@@ -24,20 +24,25 @@ const addMessage = async (chatId, message) => {
       return null;
     }
 
+    const { senderId, senderName, text, file } = message;
+
+    const newFile =
+      file && file.name
+        ? {
+            id: uuidv4(),
+            name: file.name,
+            type: file.type,
+            data: file.data,
+          }
+        : null;
+
     const newMessage = {
       id: uuidv4(),
       sentAt: new Date(),
-      senderId: message.senderId,
-      senderName: message.senderName,
-      text: message.text,
-      file:
-        message.file && message.file.name
-          ? {
-              name: message.file.name,
-              type: message.file.type,
-              data: message.file.data,
-            }
-          : null,
+      senderId: senderId,
+      senderName: senderName,
+      text: text,
+      file: newFile,
     };
 
     room.messages = [...room.messages, newMessage];
