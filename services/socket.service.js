@@ -2,19 +2,19 @@ import chatsService from "./chats.service.js";
 
 const registerChatHandlers = (io, socket) => {
   const addMessage = async (message, chatId, callback) => {
-    let isSuccess = false;
+    let newMessage = null;
     try {
       if (!chatId || !message) {
         return;
       }
 
-      isSuccess = await chatsService.addMessage(chatId, message);
+      newMessage = await chatsService.addMessage(chatId, message);
 
-      if (isSuccess) {
-        io.emit("message:add", message);
+      if (newMessage) {
+        io.emit("message:add", newMessage);
       }
     } finally {
-      if (callback) callback(isSuccess);
+      if (callback) callback(newMessage);
     }
   };
 

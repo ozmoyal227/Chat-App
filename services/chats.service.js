@@ -21,22 +21,38 @@ const addMessage = async (chatId, message) => {
     const room = await roomsService.get(chatId);
     if (!room) {
       console.error(addMessage.name, `Chat ${chatId} not found`);
-      return false;
+      return null;
     }
 
+    const { senderId, senderName, text, file } = message;
+
+    const newFile =
+      file && file.name
+        ? {
+            id: uuidv4(),
+            name: file.name,
+            type: file.type,
+            data: file.data,
+          }
+        : null;
+
     const newMessage = {
-      ...message,
       id: uuidv4(),
       sentAt: new Date(),
+      senderId: senderId,
+      senderName: senderName,
+      text: text,
+      file: newFile,
     };
 
     room.messages = [...room.messages, newMessage];
 
     await room.save();
-    return true;
+
+    return newMessage;
   } catch (error) {
-    console.error(addMessage.name, "Error adding message to chat");
-    return false;
+    console.error(addMessage.name, "Error adding message to chat", error);
+    return null;
   }
 };
 

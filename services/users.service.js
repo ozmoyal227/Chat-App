@@ -76,6 +76,103 @@ const getByName = async (name) => {
   }
 };
 
-const usersService = { addUser, addRoomToUser, get, getByName };
+const addFileToUser = async (userId, fileToAdd) => {
+  console.log(
+    addFileToUser.name,
+    `Trying to add file ${fileToAdd?.id} to user ${userId}`
+  );
+
+  if (!userId || !fileToAdd || !fileToAdd.id) {
+    console.error(
+      addFileToUser.name,
+      `Cant add file if invalid user or file received`
+    );
+    return false;
+  }
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      console.error(addFileToUser.name, `User ${userId} not found`);
+      return false;
+    }
+
+    let isFileExists = false;
+
+    if (user.files) {
+      isFileExists = user.files.some(
+        (userFile) => userFile.id === fileToAdd.id
+      );
+    }
+
+    if (isFileExists) {
+      console.error(addFileToUser.name, `File already exists on user`);
+      return false;
+    }
+
+    user.files = [...user.files, fileToAdd];
+    await user.save();
+    return true;
+  } catch (error) {
+    console.error(addFileToUser.name, "Error adding file to user", error);
+    return false;
+  }
+};
+
+const removeFileFromUser = async (userId, fileId) => {
+  console.log(
+    removeFileFromUser.name,
+    `Trying to remove file ${fileId} from user ${userId}`
+  );
+
+  if (!userId || !fileId) {
+    console.error(
+      removeFileFromUser.name,
+      `Cant remove file if invalid user or fileId received`
+    );
+    return false;
+  }
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      console.error(removeFileFromUser.name, `User ${userId} not found`);
+      return false;
+    }
+
+    user.files = user.files?.filter((f) => f.id !== fileId);
+
+    await user.save();
+    return true;
+  } catch (error) {
+    console.error(
+      removeFileFromUser.name,
+      "Error removing file from user",
+      error
+    );
+    return false;
+  }
+};
+
+const getUserFiles = async (userId) => {
+  console.log(getUserFiles.name, `Getting user ${userId} files`);
+  try {
+    const user = await User.findByPk(userId);
+    return user.files || [];
+  } catch (error) {
+    console.error(getUserFiles.name, "Error getting user files", error);
+    return null;
+  }
+};
+
+const usersService = {
+  addUser,
+  addRoomToUser,
+  get,
+  getByName,
+  addFileToUser,
+  removeFileFromUser,
+  getUserFiles,
+};
 
 export default usersService;

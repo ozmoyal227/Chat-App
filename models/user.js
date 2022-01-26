@@ -21,6 +21,10 @@ const initUser = (sequelize) => {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
+    files: {
+      type: DataTypes.JSON,
+      defaultValue: "",
+    },
   });
 
   return User;
