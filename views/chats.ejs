@@ -17,8 +17,8 @@
 <div class="container-fluid h-100">
   <div class="row h-100">
     <!-- User Panel -->
-    <div class="col-md-3 bg-info">
-      <div class="card-box text-center px-2">
+    <div class="col-3 bg-info h-100 px-3">
+      <div class="card-box d-flex flex-column h-100 text-center py-3">
         <section>
           <div class="user-pic mx-auto my-4">
             <img
@@ -30,30 +30,18 @@
           <h4 class="m-0"><% if (locals.user) { %> <%= user.name %> <% } %></h4>
         </section>
         <hr class="my-4" />
-        <section>
+        <section class="flex-grow-1 overflow-hidden">
           <!-- Files -->
-          <ul class="list-group">
-            <% for (var i = 0; i < user?.files?.length ?? 0; i++) { %>
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <%= user.files[i].name %>
-              <a
-                class="btn btn-outline-primary"
-                download="<%= user.files[i].name %>"
-                href="data:<%= user.files[i].type %>;base64, <%= user.files[i].data %>"
-              >
-                <i class="bi bi-file-earmark-arrow-down"></i>
-              </a>
-            </li>
-            <% } %>
-          </ul>
+          <ul
+            id="userFiles"
+            class="list-group list-group-flush overflow-auto h-100"
+          ></ul>
         </section>
       </div>
     </div>
 
     <!-- Chat -->
-    <div class="p-0 col-md-9 bg-danger h-100">
+    <div class="p-0 col-9 bg-danger h-100">
       <div class="d-flex flex-column h-100">
         <!-- Messages -->
         <div
@@ -151,13 +139,17 @@
   const chatId = "<%= lobby?.id %>";
   const userId = "<%= user?.id %>";
 
+  const Loader = () =>
+    `<div class="text-center">
+      <div class="spinner-border" role="status"></div>
+    </div>`;
+
   const onConnect = () => {
     console.log("User connected...");
     socket.emit("chat:join", chatId);
   };
 
   const onNewMessageReceived = (message) => {
-    console.log(message);
     // Add message to UI #chat-content
     const newMessage = createNewMessage(
       message.senderId,
@@ -241,11 +233,84 @@
   });
 
   const onAddFileToUser = async (file) => {
-    const resp = await request("POST", "/users/files", JSON.parse(file));
+    const addFileResp = await request("POST", "/users/files", JSON.parse(file));
 
-    if (!resp || !resp.ok) {
+    if (!addFileResp || !addFileResp.ok) {
       alert("Error adding file to user");
       return;
     }
+
+    refreshUserFiles();
   };
+
+  const onRemoveFileFromUser = async (fileId) => {
+    console.log(fileId);
+
+    const removeFileResp = await request("DELETE", `/users/files/${fileId}`);
+
+    if (!removeFileResp || !removeFileResp.ok) {
+      alert("Error removing file from user");
+      return;
+    }
+
+    refreshUserFiles();
+  };
+
+  const refreshUserFiles = async () => {
+    $("#userFiles").empty();
+    $("#userFiles").append(Loader);
+
+    const getUserFilesResp = await request("GET", "/users/files");
+
+    if (!getUserFilesResp?.data || !getUserFilesResp?.success) {
+      $("#userFiles").empty();
+      alert("Error reloading user files");
+      return;
+    }
+
+    // [UI] Refresh user files in UI #userFiles
+    const userFilesList = createNewUserFilesList(getUserFilesResp?.data);
+
+    $("#userFiles").empty();
+    $("#userFiles").append(userFilesList);
+  };
+
+  const createNewUserFilesList = (files) => {
+    return (
+      files?.map((file) => {
+        return `
+      <li
+        class="list-group-item d-flex justify-content-between align-items-center"
+      >
+        ${file.name}
+        
+        <div>
+          <a
+            class="btn btn-outline-primary"
+            download="${file.name}"
+            href="data:${file.type};base64, ${file.data}"
+          >
+            <i class="bi bi-file-earmark-arrow-down"></i>
+          </a>
+          <button
+            id="removeFileFromUserBtn"
+            class="btn btn-danger"
+            onclick='onRemoveFileFromUser(${JSON.stringify(file.id)})'
+          >
+            <i class="bi bi-file-earmark-minus"></i>
+          </button>
+        </div>
+      </li>
+      `;
+      }) ?? ""
+    );
+  };
+
+  const onPageLoad = async () => {
+    await refreshUserFiles();
+  };
+
+  setTimeout(() => {
+    onPageLoad();
+  });
 </script>

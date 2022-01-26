@@ -119,11 +119,46 @@ const addFileToUser = async (userId, fileToAdd) => {
   }
 };
 
+const removeFileFromUser = async (userId, fileId) => {
+  console.log(
+    removeFileFromUser.name,
+    `Trying to remove file ${fileId} from user ${userId}`
+  );
+
+  if (!userId || !fileId) {
+    console.error(
+      removeFileFromUser.name,
+      `Cant remove file if invalid user or fileId received`
+    );
+    return false;
+  }
+
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      console.error(removeFileFromUser.name, `User ${userId} not found`);
+      return false;
+    }
+
+    user.files = user.files?.filter((f) => f.id !== fileId);
+
+    await user.save();
+    return true;
+  } catch (error) {
+    console.error(
+      removeFileFromUser.name,
+      "Error removing file from user",
+      error
+    );
+    return false;
+  }
+};
+
 const getUserFiles = async (userId) => {
   console.log(getUserFiles.name, `Getting user ${userId} files`);
   try {
     const user = await User.findByPk(userId);
-    return user.files;
+    return user.files || [];
   } catch (error) {
     console.error(getUserFiles.name, "Error getting user files", error);
     return null;
@@ -136,6 +171,7 @@ const usersService = {
   get,
   getByName,
   addFileToUser,
+  removeFileFromUser,
   getUserFiles,
 };
 
