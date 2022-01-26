@@ -3,21 +3,32 @@
     width: 8vw;
   }
 
-  /* .media-body > p:not(:last-child) {
-    background: #fff;
-    padding: 0.5rem;
-    border-radius: 5px;
-    margin-bottom: 0.5rem;
-  } */
-  .media.media-chat {
-    /* min-width: 20%; */
+  #chat-content {
+    background-image: url(https://i.pinimg.com/originals/1d/78/a2/1d78a25fb160b91a6ed46e7b44fcd096.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  } 
+
+  #user-panel { 
+    background-image: url(https://i.pinimg.com/originals/8e/86/e0/8e86e00ea4937313e4b90cbe9f25c281.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* filter: blur(8px);
+    -webkit-filter: blur(8px); */
   }
+
+  #fileInput {
+    /* display: none; */
+  }
+ 
 </style>
 
 <div class="container-fluid h-100">
   <div class="row h-100">
     <!-- User Panel -->
-    <div class="col-md-3 bg-info">
+    <div class="col-md-3" id="user-panel" >
       <div class="card-box text-center px-2">
         <section>
           <div class="user-pic mx-auto my-4">
@@ -27,12 +38,13 @@
               alt="User Pic"
             />
           </div>
-          <h4 class="m-0"><% if (locals.user) { %> <%= user.name %> <% } %></h4>
+          <h2 class="m-0"><% if (locals.user) { %> <%= user.name %> <% } %></h2>
         </section>
-        <hr class="my-4" />
+          <hr class="my-4 text-white" />
         <section>
           <!-- Files -->
-          <ul class="list-group">
+          <h5 class="text-start text-white">My Files:</h5>
+          <ul class="list-group" title="my files">
             <% for (var i = 0; i < user?.files?.length ?? 0; i++) { %>
             <li
               class="list-group-item d-flex justify-content-between align-items-center"
@@ -53,7 +65,7 @@
     </div>
 
     <!-- Chat -->
-    <div class="p-0 col-md-9 bg-danger h-100">
+    <div class="p-0 col-md-9 h-100" >
       <div class="d-flex flex-column h-100">
         <!-- Messages -->
         <div

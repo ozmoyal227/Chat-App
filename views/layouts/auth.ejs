@@ -27,7 +27,7 @@
         height: 100%;
         align-content: center;
       }
-      .card {
+      .card-transparent {
         height: 330px;
         margin-top: auto;
         margin-bottom: auto;
@@ -35,7 +35,7 @@
       }
       body {
         height: 100vh;
-        background-image: url("https://neuronacreativa.com/cattleya/app-assets/images/backgrounds/chat-bg-2.png");
+        background-image: url("https://wallpaperaccess.com/full/1287392.jpg");
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -44,15 +44,15 @@
   </head>
 
   <body>
-    <div id="headline" class="d-flex justify-content-center">
+    <div id="headline" class="d-flex justify-content-center text-white">
       Welcome to Chat-App
     </div>
     <div id="loginBg">
       <div id="loginContainer" class="container">
         <div class="d-flex justify-content-center h-100">
-          <div class="card">
+          <div class="card-transparent">
             <div class="card-header">
-              <h3><%- card_title %></h3>
+              <h1 class="text-white text-center"><%- card_title %></h1>
             </div>
             <div class="card-body"><%- body %></div>
           </div>
