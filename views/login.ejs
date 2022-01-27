@@ -9,7 +9,7 @@
         required
         name="name"
         type="text"
-        class="form-control input_user"
+        class="form-control input_user mb-1"
         placeholder="Username"
       />
       <input
@@ -20,11 +20,12 @@
         placeholder="Password"
       />
 
-      <div class="d-flex justify-content-end mt-3 login_container">
-        <a class="btn btn-primary" href="/auth/register" role="button"
+      <div class="d-flex flex-column mt-2 login_container">
+        <button type="submit" class="btn btn-success login_btn ">Sign in</button>
+        <p class="mt-5 mb-0 text-white">Dont have user yet?</p>
+        <a class="btn btn-primary " href="/auth/register" role="button"
           >Register
         </a>
-        <button type="submit" class="btn login_btn border">Sign in</button>
       </div>
     </div>
   </div>

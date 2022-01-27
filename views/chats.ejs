@@ -3,21 +3,25 @@
     width: 8vw;
   }
 
-  /* .media-body > p:not(:last-child) {
-    background: #fff;
-    padding: 0.5rem;
-    border-radius: 5px;
-    margin-bottom: 0.5rem;
-  } */
-  .media.media-chat {
-    /* min-width: 20%; */
+  #user-panel { 
+    background-image: url(https://i.pinimg.com/originals/8e/86/e0/8e86e00ea4937313e4b90cbe9f25c281.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  #chat-bg {
+    background-image: url(https://i.pinimg.com/originals/1d/78/a2/1d78a25fb160b91a6ed46e7b44fcd096.jpg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 </style>
 
 <div class="container-fluid h-100">
   <div class="row h-100">
     <!-- User Panel -->
-    <div class="col-3 bg-info h-100 px-3">
+    <div class="col-3 bg-info h-100 px-3 rounded" id="user-panel">
       <div class="card-box d-flex flex-column h-100 text-center py-3">
         <section>
           <div class="user-pic mx-auto my-4">
@@ -27,21 +31,24 @@
               alt="User Pic"
             />
           </div>
-          <h4 class="m-0"><% if (locals.user) { %> <%= user.name %> <% } %></h4>
+          <h4 class="m-0 border border-dark p-1 bg-light mx-5 rounded-pill">
+            <% if (locals.user) { %> <%= user.name %> <% } %>
+          </h4>
         </section>
-        <hr class="my-4" />
+        <hr class="my-4 text-white" />
+        <h4 class="text-white align-self-start">My files:</h4>
         <section class="flex-grow-1 overflow-hidden">
           <!-- Files -->
           <ul
             id="userFiles"
-            class="list-group list-group-flush overflow-auto h-100"
+            class="list-group list-group-flush overflow-auto h-100 rounded"
           ></ul>
         </section>
       </div>
     </div>
 
     <!-- Chat -->
-    <div class="p-0 col-9 bg-danger h-100">
+    <div class="p-0 col-9 h-100 rounded" id="chat-bg">
       <div class="d-flex flex-column h-100">
         <!-- Messages -->
         <div
@@ -56,7 +63,7 @@
           !moment(lobby.messages[i].sentAt).isSame(lobby.messages[i-1].sentAt,
           'day')) { %>
           <div
-            class="media media-meta-day text-center border-bottom border-top my-3"
+            class="media media-meta-day text-center border-bottom border-top my-3 text-white "
           >
             <%= moment(lobby.messages[i].sentAt).format("MMM D") %> - <%=
             moment(lobby.messages[i].sentAt).fromNow() %>
@@ -81,7 +88,7 @@
                 <p class="mb-0"><%= lobby.messages[i].text %></p>
 
                 <% if (lobby.messages[i].file?.name){ %>
-                <div class="file card">
+                <div class="file card border border-dark">
                   <!-- Image Preview -->
                   <% if (lobby.messages[i].file?.type &&
                   isSupportedPreviewType(lobby.messages[i].file.type)){ %>
@@ -90,12 +97,12 @@
                     src="data:<%= lobby.messages[i].file.type %>;base64, <%= lobby.messages[i].file.data %>"
                   />
                   <% } %>
-                  <div class="card-body text-center">
+                  <div class="card-body text-center ">
                     <h5 class="card-title">
                       <%= lobby.messages[i].file.name %>
                     </h5>
                     <a
-                      class="btn btn-outline-primary"
+                      class="btn btn-success"
                       download="<%= lobby.messages[i].file.name %>"
                       href="data:<%= lobby.messages[i].file.type %>;base64, <%= lobby.messages[i].file.data %>"
                       ><i class="bi bi-file-earmark-arrow-down"></i
@@ -181,7 +188,7 @@
             ${
               !file?.name
                 ? ""
-                : `<div class="file card">
+                : `<div class="file card border border-dark">
                       ${
                         file?.type && isSupportedPreviewType(file.type)
                           ? `<img class="img-fluid p-2" src="data:${file.type};base64, ${file.data}" />`
@@ -189,7 +196,7 @@
                       }
                       <div class="card-body text-center">
                         <h5 class="card-title">${file.name}</h5>
-                        <a class="btn btn-outline-primary" download="${
+                        <a class="btn btn-success" download="${
                           file.name
                         }" href="data:${file.type};base64, ${
                     file.data
@@ -286,7 +293,7 @@
         
         <div>
           <a
-            class="btn btn-outline-primary"
+            class="btn btn-success"
             download="${file.name}"
             href="data:${file.type};base64, ${file.data}"
           >
@@ -305,6 +312,15 @@
       }) ?? ""
     );
   };
+
+  // adding event for enter press
+  var input = document.getElementById("add-msg");
+  input.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   event.preventDefault();
+   document.getElementById("sendButton").click();
+  }
+});
 
   const onPageLoad = async () => {
     await refreshUserFiles();
