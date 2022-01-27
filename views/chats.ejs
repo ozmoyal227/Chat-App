@@ -16,6 +16,13 @@
     background-size: cover;
     background-repeat: no-repeat;
   }
+
+  #file-name {
+    width: 60%; /* the element needs a fixed width (in px, em, %, etc) */
+    overflow: hidden; /* make sure it hides the content that overflows */
+    white-space: nowrap; /* don't break the line */
+    text-overflow: ellipsis; /* give the beautiful '...' effect */
+  }
 </style>
 
 <div class="container-fluid h-100">
@@ -148,7 +155,7 @@
 
   const Loader = () =>
     `<div class="text-center">
-      <div class="spinner-border" role="status"></div>
+      <div class="spinner-border text-light" role="status"></div>
     </div>`;
 
   const onConnect = () => {
@@ -289,7 +296,7 @@
       <li
         class="list-group-item d-flex justify-content-between align-items-center"
       >
-        ${file.name}
+        <h6 id="file-name">${file.name}</h6>
         
         <div>
           <a
