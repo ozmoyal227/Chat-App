@@ -1,27 +1,31 @@
 import { Sequelize } from "sequelize";
 import initRoom from "./models/room.js";
 import initUser from "./models/user.js";
-// import roomsService from "./services/rooms.service.js";
 
+const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
-const sequelize = (JSON.stringify(process.env.DB_HOST) === JSON.stringify("localhost")) ?
- new Sequelize(`postgres://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-    {
-      logging: false,
-    }
-  ) :
- new Sequelize(`postgres://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-      {
-        logging: false,
-        ssl: true,
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-        },
-      }
-    );
+const dbConnString = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+const isProdEnv = process.env.NODE_ENV === "production";
+
+const devConfig = {
+  logging: false,
+};
+
+const prodConfig = {
+  logging: false,
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+};
+
+const sequelize = new Sequelize(
+  dbConnString,
+  !isProdEnv ? devConfig : prodConfig
+);
 
 const db = {
   sequelize: sequelize,

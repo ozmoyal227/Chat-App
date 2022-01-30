@@ -63,18 +63,6 @@ const onSocketConnection = (socket) => {
 };
 io.on("connection", onSocketConnection);
 
-// io.on("connection", (socket) => {
-//   console.log("a user connected");
-
-//   socket.on("disconnect", () => {
-//     console.log("user disconnected");
-//   });
-
-//   socket.on("connect_error", (err) => {
-//     console.log(`connect_error due to ${err.message}`);
-//   });
-// });
-
 server.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}/ `);
 });
