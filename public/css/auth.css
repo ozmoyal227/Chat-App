@@ -1,0 +1,27 @@
+body {
+  height: 100vh;
+  background-image: url("https://wallpaperaccess.com/full/1287392.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+#headline {
+    background-color: transparent;
+  }
+#loginBg {
+  height: 100%;
+}
+#loginContainer {
+  height: 100%;
+  align-content: center;
+}
+.card {
+  height: 330px;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 350px;
+  background-image: url("https://wallpaperaccess.com/full/1287392.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

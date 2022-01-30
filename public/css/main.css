@@ -3,3 +3,29 @@ body {
   height: 100%;
   background-color: darkslategray;
 }
+
+.user-pic {
+  width: 8vw;
+}
+
+#user-panel { 
+  background-image: url(https://i.pinimg.com/originals/8e/86/e0/8e86e00ea4937313e4b90cbe9f25c281.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#chat-bg {
+  background-image: url(https://i.pinimg.com/originals/1d/78/a2/1d78a25fb160b91a6ed46e7b44fcd096.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#file-name {
+  width: 60%; /* the element needs a fixed width (in px, em, %, etc) */
+  overflow: hidden; /* make sure it hides the content that overflows */
+  white-space: nowrap; /* don't break the line */
+  text-overflow: ellipsis; /* give the beautiful '...' effect */
+}
+
