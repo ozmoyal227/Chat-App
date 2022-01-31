@@ -1,19 +1,21 @@
-<div id="add-msg" class="publisher bt-1 border-light p-1 d-flex align-items-center bg-secondary rounded">
+<div
+  id="add-msg"
+  class="publisher bt-1 border-light p-1 d-flex align-items-center bg-secondary rounded"
+>
   <img
     class="avatar avatar-xs"
     src="https://img.icons8.com/color/36/000000/administrator-male.png"
     alt="..."
   />
   <input
-    class="publisher-input flex-grow-1 "
+    class="publisher-input flex-grow-1"
     type="text"
     placeholder="Write something"
     id="messageInput"
   />
-  <div class="d-flex">
-    <input class="form-control py-0" type="file" id="fileInput" />
-    <button class="rounded" id="sendButton">Send</button>
-  </div>
+  <input class="py-0 text-white" type="file" id="fileInput" />
+
+  <button class="rounded" id="sendButton">Send</button>
 </div>
 
 <script>
@@ -70,13 +72,13 @@
       senderId: userId,
       senderName: userName,
       text: messageText,
-      file: fileName
-        ? {
+      file: !fileName
+        ? null
+        : {
             name: fileName,
             type: fileType,
             data: fileBase64,
-          }
-        : null,
+          },
     };
 
     socket.emit("message:add", message, chatId);
@@ -84,7 +86,7 @@
     reset();
   }
 
-  
+  // On DOM Ready
   (() => {
     $("#fileInput").on("change", function (e) {
       onFileInputChange(e);

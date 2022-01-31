@@ -140,7 +140,7 @@
     socket.emit("chat:join", chatId);
   };
 
-  const onNewMessageReceived = (message) => {
+  const onAddMessage = (message) => {
     // Add message to UI #chat-content
     const newMessage = createNewMessage(
       message.senderId,
@@ -220,11 +220,6 @@
     return !!supportedTypes.find((t) => type === t);
   };
 
-  socket.on("connect", onConnect);
-  socket.on("message:add", (message) => {
-    onNewMessageReceived(message);
-  });
-
   const onAddFileToUser = async (file) => {
     const addFileResp = await request("POST", "/users/files", JSON.parse(file));
 
@@ -275,7 +270,7 @@
       <li
         class="list-group-item d-flex justify-content-between align-items-center"
       >
-        <h6 id="file-name">${file.name}</h6>
+        <h6 id="file-name" class="mb-0">${file.name}</h6>
         
         <div>
           <a
@@ -299,15 +294,6 @@
     );
   };
 
-  // adding event for enter press
-  var input = document.getElementById("add-msg");
-  input.addEventListener("keyup", function (event) {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      document.getElementById("sendButton").click();
-    }
-  });
-
   const onPageLoad = async () => {
     await refreshUserFiles();
     $("#chat-content").animate(
@@ -315,6 +301,17 @@
       0
     );
   };
+
+  socket.on("connect", onConnect);
+  socket.on("message:add", onAddMessage);
+
+  // adding event for enter press
+  $("#add-msg").on("keyup", (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      $("#sendButton").click();
+    }
+  });
 
   setTimeout(() => {
     onPageLoad();

@@ -1,10 +1,10 @@
 //================================================================
-//This page handles our server app startup and import all other 
-//modules required 
+//This page handles our server app startup and import all other
+//modules required
 //================================================================
 
 //import modules
-import "dotenv/config"; 
+import "dotenv/config";
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -32,7 +32,11 @@ const app = express();
 const server = http.createServer(app);
 
 //set-up express middlewares on app
-app.use(express.json());
+app.use(
+  express.json({
+    limit: "5mb",
+  })
+);
 app.use(express.static(__dirname + "/public"));
 
 //set-up express-session on app
@@ -49,13 +53,8 @@ app.use(
 app.use(expressLayouts);
 app.set("view engine", "ejs");
 
-//DB initializition :לא אמור להיות מתחת להגדרת האוטינטיקציה על הסשן?
-(async () => {
-  await db.sequelize.sync(); 
-  await roomsService.createLobbyIfNotExist();
-})();
-
-//adding middleware layer of authenthication to the app
+//adding a way to check if a user is authenticated, and attaching it to the request object
+// using our session
 app.use(function (req, res, next) {
   req.isAuthenticated = () => {
     const session = req.session;
@@ -67,15 +66,19 @@ app.use(function (req, res, next) {
 //set-up server routes
 app.use("/", routes);
 
+//DB initialization
+(async () => {
+  await db.sequelize.sync();
+  await roomsService.createLobbyIfNotExist();
+})();
+
 //Socket IO initialization
 const io = new SocketIoServer(server);
-
 //set-up socket events
-const onSocketConnection = (socket) => {
+io.on("connection", (socket) => {
   console.log("a user connected");
   socketService.registerChatHandlers(io, socket); //socket services for chat app
-};
-io.on("connection", onSocketConnection);
+});
 
 //server start to listen for connections
 server.listen(PORT, () => {

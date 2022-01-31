@@ -10,6 +10,8 @@ const registerChatHandlers = (io, socket) => {
 
       newMessage = await chatsService.addMessage(chatId, message);
 
+      // If message added successfully to the DB,
+      // Emit the added message to clients
       if (newMessage) {
         io.emit("message:add", newMessage);
       }

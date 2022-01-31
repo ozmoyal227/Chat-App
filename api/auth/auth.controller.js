@@ -13,6 +13,7 @@ const postLogin = async (req, res) => {
   const { name, password } = req.body;
 
   if (!name || !password) {
+    // Return BadRequest
     res
       .status(400)
       .send(new BaseResponse(false, "Invalid username or password"));
@@ -25,16 +26,17 @@ const postLogin = async (req, res) => {
   });
 
   const session = req.session;
-  session.userId = userId;
   session.isAuthenticated = !!userId;
-  session.username = name;
 
-  if (userId) {
-    res.redirect("/");
+  if (!userId) {
+    // Return Unauthorized
+    res.status(401).send();
     return;
   }
 
-  res.status(401).send();
+  session.userId = userId;
+  session.username = name;
+  res.redirect("/");
 };
 
 const getRegister = (req, res) => {
