@@ -13,6 +13,8 @@ const registerChatHandlers = (io, socket) => {
       if (newMessage) {
         io.emit("message:add", newMessage);
       }
+    } catch (error) {
+      console.error("Error sending message", error);
     } finally {
       if (callback) callback(newMessage);
     }

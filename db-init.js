@@ -5,7 +5,7 @@ import initUser from "./models/user.js";
 const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
 const dbConnString = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-const isProdEnv = process.env.NODE_ENV === "production";
+const isProdEnv = (process.env.NODE_ENV === "production");
 
 const devConfig = {
   logging: false,
