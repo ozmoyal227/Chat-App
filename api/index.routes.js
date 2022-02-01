@@ -1,3 +1,7 @@
+//================================================================
+//This page handles our server app startup and import all other 
+//... To set up all our URL endpoints. 
+//================================================================
 import express from "express";
 import userRouter from "./user/user.route.js";
 import roomRouter from "./room/room.route.js";

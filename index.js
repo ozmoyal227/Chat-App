@@ -1,42 +1,38 @@
 //================================================================
-//This page handles our server app startup and import all other
-//modules required
+//This page handles our server app startup and import all other 
+//modules required 
 //================================================================
 
 //import modules
-import "dotenv/config";
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import routes from "./api/index.routes.js";
-import db from "./db-init.js";
-import roomsService from "./services/rooms.service.js";
-import expressLayouts from "express-ejs-layouts";
-import session from "express-session";
-import socketService from "./services/socket.service.js";
-import { Server as SocketIoServer } from "socket.io";
-import * as http from "http";
+import "dotenv/config"; //tool for environment variables, using .env file
+import express from "express"; //tool for creating server
+import path from "path"; //tools for express to locate static files
+import { fileURLToPath } from "url"; 
+import routes from "./api/index.routes.js"; //import our routs for the server
+import db from "./db-init.js"; //import our DB after his configuration 
+import roomsService from "./services/rooms.service.js"; //tools needed from our chat room services
+import expressLayouts from "express-ejs-layouts"; // tool for express to with with layouts
+import session from "express-session"; // import session for express server 
+import socketService from "./services/socket.service.js"; //import our socket services
+import { Server as SocketIoServer } from "socket.io"; //socket is the tool we will use for transferring information
+import * as http from "http"; //import http interfaces for server creating
 
 //define session life span
 const oneDay = 1000 * 60 * 60 * 24;
 
-//preparation epress static files path
+//preparation express static files path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-//define port according to enviornment, development or production
+//define port according to environment, development or production
 const PORT = process.env.PORT || 3000;
 
 //initialization of server app
 const app = express();
 const server = http.createServer(app);
 
-//set-up express middlewares on app
-app.use(
-  express.json({
-    limit: "5mb",
-  })
-);
+//set-up express middleware on app
+app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 
 //set-up express-session on app
@@ -53,8 +49,7 @@ app.use(
 app.use(expressLayouts);
 app.set("view engine", "ejs");
 
-//adding a way to check if a user is authenticated, and attaching it to the request object
-// using our session
+//adding middleware layer of authenthication to the app
 app.use(function (req, res, next) {
   req.isAuthenticated = () => {
     const session = req.session;
@@ -66,19 +61,21 @@ app.use(function (req, res, next) {
 //set-up server routes
 app.use("/", routes);
 
-//DB initialization
+//run DB
 (async () => {
-  await db.sequelize.sync();
+  await db.sequelize.sync(); 
   await roomsService.createLobbyIfNotExist();
 })();
 
 //Socket IO initialization
 const io = new SocketIoServer(server);
+
 //set-up socket events
-io.on("connection", (socket) => {
+const onSocketConnection = (socket) => {
   console.log("a user connected");
   socketService.registerChatHandlers(io, socket); //socket services for chat app
-});
+};
+io.on("connection", onSocketConnection);
 
 //server start to listen for connections
 server.listen(PORT, () => {

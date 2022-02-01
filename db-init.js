@@ -12,9 +12,10 @@ import initUser from "./models/user.js";
 const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 const dbConnString = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
-//instances for sequelize configuration, depand on enviornment
+//instances for sequelize configuration, depend on environment
 const isProdEnv = (process.env.NODE_ENV === "production");
 
+//creating configurations for sequelize for each environment 
 const devConfig = {
   logging: false,
 };
@@ -30,12 +31,13 @@ const prodConfig = {
   },
 };
 
-//DB initialization with postgresSQL
+//sequelize initialization 
 const sequelize = new Sequelize(
   dbConnString,
   !isProdEnv ? devConfig : prodConfig
 );
 
+//DB initialization 
 const db = {
   sequelize: sequelize,
   users: null,
