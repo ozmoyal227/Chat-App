@@ -1,26 +1,35 @@
+<!-- ================================================================
+This page is our chat layout UI ,
+using chats as view
+================================================================ -->
 <!DOCTYPE html>
 <html>
   <head>
     <title>Chats</title>
 
+      <!-- bootstrap links, tool fr front-end design and customization-->
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+    crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"
+    />
+
+    <!-- client-side socket -->
     <script
       src="https://cdn.socket.io/4.4.1/socket.io.min.js"
       integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
       crossorigin="anonymous"
     ></script>
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"
-    />
+    <!-- css link -->
     <link rel="stylesheet" type="text/css" href="css/main.css" />
 
+    <!-- jquery link, api for extra functionalities to scripts -->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
       integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
@@ -28,6 +37,7 @@
       referrerpolicy="no-referrer"
     ></script>
 
+    <!-- moment link, tool for time format -->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
       integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
@@ -45,10 +55,11 @@
       <main class="flex-grow-1 overflow-hidden"><%- body %></main>
     </div>
     <script>
-      
+      //this function let the client communicate with the server
+      //returning response to the client request
       async function request(method, url, data) {
         try {
-          const resp = await fetch(url, {
+          const res = await fetch(url, {
             method: method,
             headers: {
               "Content-Type": "application/json",
@@ -57,19 +68,21 @@
             redirect: "follow",
           });
 
-          if (resp.redirected) {
-            window.location.href = resp.url;
+          //in case of redirect, move to response url
+          if (res.redirected) {
+            window.location.href = res.url;
           }
 
-          const respData = await resp.json();
+          const resData = await res.json();
 
-          return { ...respData, ok: resp.ok };
+          return { ...resData, ok: res.ok };
         } catch (error) {
           console.error(error);
           return null;
         }
       }
 
+      //function to activate when logout button pressed
       async function logout() {
         await request("GET", "/auth/logout");
       }

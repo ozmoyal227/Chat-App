@@ -1,10 +1,12 @@
+<!-- ================================================================
+This page is our Login UI ,
+a view for authentication layout 
+================================================================ -->
 <form action="" onsubmit="return onLogin(event)">
-  <% if (locals.err_msg) { %>
-  <h3><%= err_msg %></h3>
-  <% } %>
 
   <div class="input-group mb-3 justify-content-center">
     <div class="input-group-append">
+      <!-- input for user name -->
       <input
         required
         name="name"
@@ -12,6 +14,7 @@
         class="form-control input_user mb-1"
         placeholder="Username"
       />
+      <!-- input for password -->
       <input
         required
         name="password"
@@ -21,8 +24,10 @@
       />
 
       <div class="d-flex flex-column mt-2 login_container">
+        <!-- button to sign-in -->
         <button type="submit" class="btn btn-success login_btn">Sign in</button>
         <p class="mt-5 mb-0 text-white">Dont have user yet?</p>
+        <!-- button to move to register page -->
         <a class="btn btn-primary" href="/auth/register" role="button"
           >Register
         </a>
@@ -32,15 +37,19 @@
 </form>
 
 <script>
+  //function to activate when login form submitted
   async function onLogin(e) {
     e.preventDefault();
 
+    //getting form attributes 
     const form = new FormData(e.target);
     const name = form.get("name");
     const password = form.get("password");
-
-    const resp = await request("POST", "/auth/login", { name, password });
-    if (!resp || !resp.ok) {
+    
+    //send request to login and getting response
+    const res = await request("POST", "/auth/login", { name, password });
+    //checking if the response was successful
+    if (!res || !res.ok) {
       alert("Login Error");
       return;
     }

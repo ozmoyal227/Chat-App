@@ -66,7 +66,7 @@ const postRegister = async (req, res) => {
     res.status(500).send();
     return;
   }
-
+  
   res.redirect("/auth/login");
 };
 

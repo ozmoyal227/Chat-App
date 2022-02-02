@@ -1,5 +1,5 @@
 <!-- ================================================================
-This page is our UI authentication main layout,
+This page is our authentication main layout UI ,
 using login and register views 
 ================================================================ -->
 <!DOCTYPE html>
@@ -20,8 +20,8 @@ using login and register views
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
       integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
       crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+      referrerpolicy="no-referrer">
+    </script>
 
     <!-- styling for authentication layout-->
     <style>
@@ -60,6 +60,7 @@ using login and register views
       Welcome to Chat-App
     </div>
 
+    <!-- login and register container -->
     <div id="loginContainer" class="container">
       <div class="d-flex justify-content-center h-100">
         <div class="card border-light">
@@ -71,23 +72,26 @@ using login and register views
       </div>
     </div>
     <script>
-
+      //this function let the client communicate with the server
+      //returning response to the client request
       async function request(method, url, data) {
         try {
-          const resp = await fetch(url, {
+          //creating response to the request
+          const res = await fetch(url, {
             method: method,
-            headers: {
+            headers: {  
               "Content-Type": "application/json",
             },
             body: data ? JSON.stringify(data) : {},
             redirect: "follow",
           });
 
-          if (resp.redirected) {
-            window.location.href = resp.url;
+          //in case of redirect, move to response url
+          if (res.redirected) { 
+            window.location.href = res.url;
           }
           
-          return resp;
+          return res;
         } catch (error) {
           console.error(error);
           return null;

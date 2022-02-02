@@ -49,7 +49,7 @@ app.use(
 app.use(expressLayouts);
 app.set("view engine", "ejs");
 
-//adding middleware layer of authenthication to the app
+//adding middleware layer of authentication to the app
 app.use(function (req, res, next) {
   req.isAuthenticated = () => {
     const session = req.session;
