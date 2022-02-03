@@ -11,39 +11,44 @@ This is the UI for sending messages
     src="https://img.icons8.com/color/36/000000/administrator-male.png"
     alt="..."
   />
+  <!-- input for text -->
   <input
     class="publisher-input flex-grow-1"
     type="text"
     placeholder="Write something"
     id="messageInput"
   />
+  <!-- input for file -->
   <input class="py-0 text-white" type="file" id="fileInput" />
-
+  <!-- send message button -->
   <button class="rounded" id="sendButton">Send</button>
 </div>
 
 <script>
-  const userName = "<%= user.name %>";
+  //all files will be converted to base64 string before sending the file
+  //after that will be converted back for download
 
+  //variables for message with file
+  const userName = "<%= user.name %>";
   let fileName = "";
   let fileBase64 = "";
   let fileType = "";
 
+  //function to convert the file to base64 
   const onFileInputChange = (e) => {
-    // get a reference to the file
+    //get a reference to the file in input
     const file = e.target.files[0];
-
+    //if there is a file, taking his properties 
     if (!file) {
       return;
     }
-
     fileName = file.name;
     fileType = file.type;
 
-    // encode the file using the FileReader API
+    //encode the file using the FileReader api
     const reader = new FileReader();
     reader.onloadend = () => {
-      // use a regex to remove data url part
+      //use a regex to remove data url part
       const base64String = reader.result
         .replace("data:", "")
         .replace(/^.+,/, "");
@@ -53,17 +58,17 @@ This is the UI for sending messages
     reader.readAsDataURL(file);
   };
 
+  //function to reset message input and file variables after sending
   const reset = () => {
     $("#messageInput").val("");
-    if (fileName) resetFileInput();
+    //if there is not filename there is not file
+    if (fileName) $("#fileInput").val(""); 
     fileBase64 = "";
     fileName = "";
     fileType = "";
   };
 
-  const resetFileInput = () => {
-    $("#fileInput").val("");
-  };
+  
 
   async function onSendMessage() {
     const messageText = $("#messageInput").val();
@@ -90,7 +95,7 @@ This is the UI for sending messages
     reset();
   }
 
-  // On DOM Ready
+  //finally self-invoke function for reset inputs and send message  
   (() => {
     $("#fileInput").on("change", function (e) {
       onFileInputChange(e);

@@ -1,3 +1,8 @@
+// ================================================================
+// This page performs authentication actions
+// ================================================================ 
+
+//import DB and connect
 import db from "../db-init.js";
 import roomsService, { lobbyId } from "./rooms.service.js";
 import usersService from "./users.service.js";

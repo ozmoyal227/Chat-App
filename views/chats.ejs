@@ -58,7 +58,7 @@ a view for main layout
                 src="https://img.icons8.com/color/36/000000/administrator-male.png"
                 alt="..."
               />
-              <div class="card p-2 media-body flex-grow-1">
+              <div class="card p-2 media-body flex-grow-1 ">
                 <!-- sender name -->
                 <p class="mb-0">
                   <strong><%= lobby.messages[i].senderName %></strong>
@@ -67,12 +67,12 @@ a view for main layout
                 <p class="mb-0"><%= lobby.messages[i].text %></p>
                 <!-- checking if message contains file -->
                 <% if (lobby.messages[i].file?.name){ %>
-                <div class="file card border border-dark">
+                <div class="file card border border-dark "  >
                   <!--checking if the file have an image preview -->
                   <% if (lobby.messages[i].file?.type &&
                   isSupportedPreviewType(lobby.messages[i].file.type)){ %>
                   <img
-                    class="img-fluid p-2"
+                    class="img-fluid p-2 "
                     src="data:<%= lobby.messages[i].file.type %>;base64, <%= lobby.messages[i].file.data %>"
                   />
                   <% } %>
