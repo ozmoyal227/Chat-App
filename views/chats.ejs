@@ -111,7 +111,7 @@ a view for main layout
           <% } %>
           </div>
 
-          <!-- add Message, using add-message view -->
+          <!-- add message using add-message view -->
           <%- include('./partials/add-message.ejs', { user:user, chatId:lobby.id}) %>
         </div>
       </div>
@@ -314,7 +314,10 @@ a view for main layout
     }
   });
 
-  //
+  //this function prepare the page after all tasks
+  //when using setTimeout without time, the time out call is zero on default
+  //so after the call ended, it will get out last from the task queue in the browser 
+  //eventually ensuring it will be the last call
   setTimeout(() => {
     onPageLoad();
   });
