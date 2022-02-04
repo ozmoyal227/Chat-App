@@ -1,14 +1,22 @@
+// ================================================================
+// This page performs chat actions
+// ================================================================ 
+
+//import room services and unique id creator
 import roomsService from "./rooms.service.js";
 import { v4 as uuidv4 } from "uuid";
 
+//function to get chat messages 
 const getChatMessages = async (chatId) => {
   try {
+    //get room if existed
     const room = await roomsService.get(chatId);
     if (!room) {
       console.error(getChatMessages.name, `Chat ${chatId} not found`);
       return false;
     }
 
+    //return room messages
     return room.messages;
   } catch (error) {
     console.error(getChatMessages.name, "Error getting chat messages");
@@ -16,16 +24,20 @@ const getChatMessages = async (chatId) => {
   }
 };
 
+//function for adding message to room, then return the message added
 const addMessage = async (chatId, message) => {
   try {
+    //get room if existed
     const room = await roomsService.get(chatId);
     if (!room) {
       console.error(addMessage.name, `Chat ${chatId} not found`);
       return null;
     }
 
-    const { senderId, senderName, text, file } = message;
+    //construct a new message from given message:
 
+    const { senderId, senderName, text, file } = message;
+    //if the message holds a file, create new file from it
     const newFile =
       file && file.name
         ? {
@@ -45,8 +57,10 @@ const addMessage = async (chatId, message) => {
       file: newFile,
     };
 
+    //add message to room messages
     room.messages = [...room.messages, newMessage];
 
+    //save room table after changes
     await room.save();
 
     return newMessage;

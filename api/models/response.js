@@ -1,3 +1,8 @@
+// ================================================================
+// This page holds response classes
+// ================================================================ 
+
+//define base response
 export class BaseResponse {
   constructor(isSuccess, message = "") {
     this.success = isSuccess;
@@ -5,6 +10,7 @@ export class BaseResponse {
   }
 }
 
+//define response with data
 export class Response extends BaseResponse {
   constructor(isSuccess, data = null, message = "") {
     super(isSuccess, message);
