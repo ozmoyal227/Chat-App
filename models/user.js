@@ -1,6 +1,12 @@
+// ================================================================
+// This page holds the User module for the DB
+// ================================================================ 
+
+//import sequelize
 import sequelize from "sequelize";
 const { DataTypes } = sequelize;
 
+//function to initialize User module with all the attributes for users
 const initUser = (sequelize) => {
   const User = sequelize.define("user", {
     id: {

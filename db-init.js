@@ -3,12 +3,12 @@
 //import all other modules required for DB construction
 //================================================================
 
-//import modules
+//import modules and sequelize, our ORM(object-relational mapping) for postgres
 import { Sequelize } from "sequelize";
 import initRoom from "./models/room.js";
 import initUser from "./models/user.js";
 
-//import enviornment values to initialize connection with the DB 
+//import environment values to initialize connection with the DB 
 const { DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 const dbConnString = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 

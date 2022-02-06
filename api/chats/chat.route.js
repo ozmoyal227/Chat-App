@@ -9,7 +9,7 @@ import { isAuthMiddleware } from "../../middleware/auth.middleware.js";
 
 const chatRouter = express.Router();
 
-//set get router chat view
+//set get router to chat view
 chatRouter.get("/", isAuthMiddleware, chatsController.getChats);
 
 export default chatRouter;

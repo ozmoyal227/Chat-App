@@ -1,6 +1,12 @@
+// ================================================================
+// This page holds the Room module for the DB
+// ================================================================ 
+
+//import sequelize
 import sequelize from "sequelize";
 const { DataTypes } = sequelize;
 
+//function to initialize Room module with all the attributes for chat rooms
 const initRoom = (sequelize) => {
   const Room = sequelize.define("room", {
     id: {

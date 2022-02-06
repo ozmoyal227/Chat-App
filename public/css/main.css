@@ -9,17 +9,18 @@ body {
 }
 
 #user-panel { 
-  background-image: url(https://i.pinimg.com/originals/8e/86/e0/8e86e00ea4937313e4b90cbe9f25c281.jpg);
+  background-image: url(https://wallpaperaccess.com/full/1981448.jpg);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 #chat-bg {
-  background-image: url(https://i.pinimg.com/originals/1d/78/a2/1d78a25fb160b91a6ed46e7b44fcd096.jpg);
+  background-image: url(https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/9c1034ce-e67e-4430-bef8-fd4c5bd18f97/d6dv82f-ac254f20-8c79-4873-9c4b-374081abba89.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzljMTAzNGNlLWU2N2UtNDQzMC1iZWY4LWZkNGM1YmQxOGY5N1wvZDZkdjgyZi1hYzI1NGYyMC04Yzc5LTQ4NzMtOWM0Yi0zNzQwODFhYmJhODkucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.ZCJKd3l29IBG-KsXnglIkKIrMrEzNFgyt0ar4WD-QEc);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+
 }
 
 #file-name {
@@ -28,4 +29,6 @@ body {
   white-space: nowrap; /* don't break the line */
   text-overflow: ellipsis; /* give the beautiful '...' effect */
 }
+
+
 

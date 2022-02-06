@@ -1,5 +1,5 @@
 //================================================================
-//This page middleware functions for authentication
+//This page holds middleware functions for authentication
 //================================================================
 
 //define middleware
