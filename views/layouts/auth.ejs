@@ -1,0 +1,102 @@
+<!-- ================================================================
+This page is our authentication main layout UI ,
+using login and register views 
+================================================================ -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%- title %></title>
+
+    <!-- bootstrap link -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+
+    <!-- jquery link -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+    </script>
+
+    <!-- styling for authentication layout-->
+    <style>
+      body {
+        height: 100vh;
+        background-image: url("https://wallpaperaccess.com/full/1981448.jpg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      #headline {
+        background-color: transparent;
+      }
+
+      #loginContainer {
+        height: 100%;
+        align-content: center;
+      }
+      .card {
+        height: 330px;
+        margin-top: auto;
+        margin-bottom: auto;
+        width: 350px;
+        background-image: url("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/9c1034ce-e67e-4430-bef8-fd4c5bd18f97/d6dv82f-ac254f20-8c79-4873-9c4b-374081abba89.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzljMTAzNGNlLWU2N2UtNDQzMC1iZWY4LWZkNGM1YmQxOGY5N1wvZDZkdjgyZi1hYzI1NGYyMC04Yzc5LTQ4NzMtOWM0Yi0zNzQwODFhYmJhODkucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.ZCJKd3l29IBG-KsXnglIkKIrMrEzNFgyt0ar4WD-QEc");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    </style>
+  </head>
+
+
+  <body class="overflow-hidden">
+
+    <div id="headline" class="d-flex justify-content-center text-white">
+      Welcome to Chat-App
+    </div>
+
+    <!-- login and register container -->
+    <div id="loginContainer" class="container">
+      <div class="d-flex justify-content-center h-100">
+        <div class="card border-light">
+          <div class="card-header">
+            <h3 class=""><%- card_title %></h3>
+          </div>
+          <div class="card-body"><%- body %></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      //this function let the client communicate with the server
+      //returning response to the client request
+      async function request(method, url, data) {
+        try {
+          //creating response to the request
+          const res = await fetch(url, {
+            method: method,
+            headers: {  
+              "Content-Type": "application/json",
+            },
+            body: data ? JSON.stringify(data) : {},
+            redirect: "follow",
+          });
+
+          //in case of redirect, move to response url
+          if (res.redirected) { 
+            window.location.href = res.url;
+          }
+          
+          return res;
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
+      }
+    </script>
+  </body>
+</html>

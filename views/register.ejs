@@ -1,0 +1,85 @@
+<!-- ================================================================
+This page is our Register UI ,
+a view for authentication layout 
+================================================================ -->
+<form action="" onsubmit="return onRegister(event)">
+
+  <div class="input-group mb-3 justify-content-center">
+    <div class="input-group-append">
+      <!-- input for user name -->
+      <input
+        required
+        name="name"
+        type="text"
+        class="form-control input_user mb-1"
+        placeholder="Username"
+      />
+      <!-- input for password -->
+      <input
+        id="password"
+        name="password"
+        type="password"
+        class="form-control input_pass mb-1"
+        placeholder="Password"
+        required
+      />
+      <!-- input for password confirmation -->
+      <input
+        id="retypePassword"
+        name="passwordConfirmation"
+        type="password"
+        class="form-control input_pass"
+        placeholder="Confirm Password"
+        required
+      />
+
+      <div class="d-flex flex-column mt-2 login_container">
+        <!-- button to register -->
+        <button type="submit" name="button" class="btn btn-success login_btn ">
+          Register
+        </button>
+        <p class="mt-2 mb-0">Already have a user account?</p>
+        <!-- button to move to login page -->
+        <a class="btn btn-primary" href="/auth/login" role="button">Sign in </a>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+
+  //function to check password confirmation
+  (function () {
+    $("#retypePassword").on("input", function () {
+      const password = $("#password").get(0);
+      const retypePassword = $(this).get(0);
+
+      if (
+        !password ||
+        !retypePassword ||
+        password.value !== retypePassword.value
+      ) {
+        retypePassword.setCustomValidity("Password mismatch");
+      } else {
+        retypePassword.setCustomValidity("");
+      }
+    });
+  })();
+
+  //function to activate when Register form submitted
+  async function onRegister(e) {
+    e.preventDefault();
+
+    //get form attributes 
+    const form = new FormData(e.target);
+    const name = form.get("name");
+    const password = form.get("password");
+
+    //send request to register and getting response
+    const resp = await request("POST", "/auth/register", { name, password });
+    if (!resp || !resp.ok) {
+      alert("Register Error");
+      return;
+    }
+  }
+</script>
